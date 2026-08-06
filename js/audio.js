@@ -506,6 +506,38 @@ window.RaidenAudio = (() => {
     },
     setCrossfade(v) { crossfade = Math.min(1, Math.max(0, v)); },
 
+    // low rumble under a lightning strike — bypasses the DJ filter on purpose
+    thunder(intensity = 0.8) {
+      if (!ctx) return;
+      const t = ctx.currentTime + 0.02;
+      const dur = 2.2 + Math.random() * 0.8;
+      const src = ctx.createBufferSource();
+      noiseSource(t, 0); // ensure the shared noise buffer exists
+      src.buffer = noiseBuffer;
+      src.loop = true;
+      src.playbackRate.value = 0.3 + Math.random() * 0.12;
+
+      const lp = ctx.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.Q.value = 0.7;
+      lp.frequency.setValueAtTime(340, t);
+      lp.frequency.exponentialRampToValueAtTime(55, t + dur);
+
+      const g = ctx.createGain();
+      const peak = 0.4 * Math.min(1, intensity);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(peak, t + 0.05);
+      g.gain.exponentialRampToValueAtTime(peak * 0.35, t + 0.5);
+      g.gain.exponentialRampToValueAtTime(peak * 0.6, t + 0.85); // rolling secondary swell
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+      src.connect(lp);
+      lp.connect(g);
+      g.connect(compressor);
+      src.start(t);
+      src.stop(t + dur + 0.1);
+    },
+
     setFilter(v) {
       filterValue = Math.min(1, Math.max(-1, v));
       if (!ctx) return;

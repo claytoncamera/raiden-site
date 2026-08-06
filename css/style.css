@@ -281,6 +281,7 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   margin-bottom: 1.2rem;
 }
 .hero-title {
+  --tg: 60px;
   font-size: clamp(3.2rem, 14vw, 10.5rem);
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -288,8 +289,16 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   text-shadow:
     2px 0 0 rgba(255, 60, 90, 0.18),
     -2px 0 0 rgba(60, 220, 255, 0.18),
-    0 0 60px var(--glow);
-  transition: text-shadow 0.6s ease;
+    0 0 var(--tg) var(--glow);
+  transition: transform 0.2s ease;
+}
+.hero-title.jolt {
+  transform: scale(1.014);
+  text-shadow:
+    3px 0 0 rgba(255, 60, 90, 0.3),
+    -3px 0 0 rgba(60, 220, 255, 0.3),
+    0 0 90px var(--glow),
+    0 0 26px var(--accent);
 }
 .hero-title span {
   display: inline-block;
@@ -304,6 +313,37 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 @keyframes charIn {
   from { opacity: 0; transform: translateY(0.4em) scale(0.9); filter: blur(6px); }
   to   { opacity: 1; transform: none; filter: none; }
+}
+/* the E flickers like a tired neon sign, rarely */
+.hero-title span:nth-child(5) {
+  animation:
+    charIn 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2) 0.37s backwards,
+    letterFlicker 13s linear 7s infinite;
+}
+@keyframes letterFlicker {
+  0%, 90.8%, 93.4%, 100% { opacity: 1; }
+  91.4%, 94% { opacity: 0.3; }
+  92.4% { opacity: 0.75; }
+}
+
+.hero-kanji {
+  position: absolute;
+  z-index: 1;
+  font-size: clamp(9rem, 30vh, 19rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.055;
+  pointer-events: none;
+  user-select: none;
+  transition: color 0.6s ease;
+}
+.hero-kanji-l { left: 2vw; top: 12%; }
+.hero-kanji-r { right: 2vw; bottom: 10%; }
+@media (max-width: 900px) {
+  .hero-kanji { font-size: clamp(6rem, 16vh, 10rem); opacity: 0.04; }
+  .hero-kanji-l { left: -2vw; top: 6%; }
+  .hero-kanji-r { right: -2vw; bottom: 4%; }
 }
 .hero-tagline {
   margin: 1.1rem 0 2rem;
@@ -333,6 +373,19 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   0%, 100% { transform: scaleY(0.4); opacity: 0.4; transform-origin: top; }
   50% { transform: scaleY(1); opacity: 1; transform-origin: top; }
 }
+.hero-hint {
+  position: absolute;
+  right: clamp(1rem, 3vw, 2.4rem);
+  bottom: 1.6rem;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: var(--text-dim);
+  opacity: 0.5;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) { .hero-hint { display: none; } }
 
 /* ---------- ticker ---------- */
 .ticker {
@@ -969,6 +1022,19 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   inset: 0;
   background: linear-gradient(180deg, transparent 40%, rgba(5, 5, 10, 0.75));
 }
+/* lighthouse beam sweeps the artwork on hover */
+.mix-art::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(from 0deg, transparent 0 8%, rgba(255, 255, 255, 0.14) 10%, transparent 13% 100%);
+  animation: beamSweep 3.2s linear infinite;
+  animation-play-state: paused;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.mix-card:hover .mix-art::before { animation-play-state: running; opacity: 1; }
+@keyframes beamSweep { to { transform: rotate(360deg); } }
 .mix-art-1 { background: conic-gradient(from 210deg at 60% 40%, #1b1030, var(--accent), #05050a 65%); }
 .mix-art-2 { background: conic-gradient(from 40deg at 30% 70%, #05050a, var(--accent-2), #101018 70%); }
 .mix-art-3 { background: conic-gradient(from 120deg at 70% 60%, #14061f, var(--accent), var(--accent-2) 55%, #05050a 75%); }
@@ -1219,9 +1285,24 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 .footer {
   border-top: 1px solid var(--line);
   background: var(--bg-2);
-  padding: 3rem 0 2.2rem;
+  padding: 2.2rem 0;
   position: relative;
   z-index: 2;
+  overflow: hidden;
+}
+.footer-wordmark {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3.4rem, 12.5vw, 10.5rem);
+  line-height: 0.9;
+  text-align: center;
+  letter-spacing: 0.08em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.13);
+  user-select: none;
+  margin-bottom: 2rem;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.25));
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.25));
 }
 .footer-inner {
   max-width: 1180px;
@@ -1345,4 +1426,7 @@ html.static-mode { scroll-behavior: auto; }
   .stream-rec.live i { animation: none; }
   .chat-msg { animation: none; }
   .booth { transition: none; }
+  .hero-title span:nth-child(5) { animation: none; }
+  .mix-art::before { animation: none; opacity: 0; }
+  .hero-title.jolt { transform: none; }
 }

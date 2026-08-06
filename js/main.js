@@ -137,6 +137,49 @@
     }, 1000);
   }
 
+  /* ---------- storm ↔ page coupling ---------- */
+  const heroTitle = document.querySelector(".hero-title");
+  const heroInner = document.querySelector(".hero-inner");
+
+  // lightning jolt on the title when the storm targets it
+  let joltTimer = null;
+  window.addEventListener("raiden:strike", (e) => {
+    if (!heroTitle || reduceMotion) return;
+    if (e.detail && e.detail.title) {
+      heroTitle.classList.add("jolt");
+      clearTimeout(joltTimer);
+      joltTimer = setTimeout(() => heroTitle.classList.remove("jolt"), 240);
+    }
+  });
+
+  // title glow breathes with the low end
+  if (heroTitle && !reduceMotion) {
+    (function glowLoop() {
+      if (window.RaidenAudio && RaidenAudio.ready && RaidenAudio.anyPlaying()) {
+        const b = RaidenAudio.bands();
+        heroTitle.style.setProperty("--tg", `${Math.round(55 + b.low * 90)}px`);
+      }
+      requestAnimationFrame(glowLoop);
+    })();
+  }
+
+  // gentle hero parallax + fade on scroll
+  if (heroInner && !reduceMotion) {
+    let ticking = false;
+    window.addEventListener("scroll", () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y < window.innerHeight) {
+          heroInner.style.transform = `translateY(${y * 0.28}px)`;
+          heroInner.style.opacity = String(Math.max(0.3, 1 - y / 900));
+        }
+        ticking = false;
+      });
+    }, { passive: true });
+  }
+
   /* ---------- camera tilt on the rig (fine pointers only) ---------- */
   const streamStage = document.getElementById("streamStage");
   const boothRig = document.getElementById("boothRig");

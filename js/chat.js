@@ -105,6 +105,17 @@
     }
   });
 
+  /* ---------- lightning reactions (rare) ---------- */
+  const STRIKE_LINES = ["did anyone else see that bolt ⚡", "the SKY is mixing too", "lightning on beat??", "storm synced. unreal."];
+  let lastStrikeMsg = 0;
+  window.addEventListener("raiden:strike", () => {
+    const playing = window.RaidenAudio && RaidenAudio.ready && RaidenAudio.anyPlaying();
+    if (!playing) return;
+    if (Date.now() - lastStrikeMsg < 50000) return;
+    lastStrikeMsg = Date.now();
+    post(pick(STRIKE_LINES));
+  });
+
   /* ---------- ambient chatter ---------- */
   function ambientTick() {
     const playing = window.RaidenAudio && RaidenAudio.ready && RaidenAudio.anyPlaying();
