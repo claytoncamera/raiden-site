@@ -46,13 +46,15 @@
   let ripples = [];
   let cloudSprite = null;
 
-  let stormLevel = 0.12;      // 0..1 — everything scales off this
+  let stormLevel = 0.18;      // 0..1 — everything scales off this
   let smoothedLow = 0;
   let lastBoltAt = 0;
-  let nextIdleBolt = 1200;    // first strike lands fast
+  let nextIdleBolt = 3000;    // a guaranteed title strike beats this to it
   let lastThunderAt = 0;
   let sheet = null;           // active sheet-lightning flash
   let nextSheetAt = 4000 + Math.random() * 6000;
+  let boltFlash = 0;          // recent-strike light that spills onto the clouds
+  let nextCrawlerAt = 6000 + Math.random() * 5000;
 
   /* ================= setup ================= */
   function resize() {
@@ -174,7 +176,7 @@
     if (opts.x != null) {
       tx = opts.x;
       ty = opts.y != null ? opts.y : H - 30 - Math.random() * 60;
-    } else if (titleEl && Math.random() < 0.28) {
+    } else if (titleEl && (opts.title || Math.random() < 0.28)) {
       // sometimes the storm goes straight for the name
       const r = titleEl.getBoundingClientRect();
       const c = canvas.getBoundingClientRect();
@@ -190,19 +192,19 @@
     bolts.push({
       segments: genBolt(sx, -12, tx, ty),
       born: now,
-      leader: 70 + Math.random() * 50,
-      life: 430 + Math.random() * 260,
+      leader: 45 + Math.random() * 40,
+      life: 520 + Math.random() * 300,
       impact: { x: tx, y: ty },
       major: true,
     });
-    // companion bolt, dimmer and offset in time
-    if (Math.random() < 0.4) {
+    // companion bolt — always for summoned strikes, often otherwise
+    if (opts.x != null || Math.random() < 0.55) {
       const tx2 = W * (0.1 + Math.random() * 0.8);
       bolts.push({
         segments: genBolt(tx2 + (Math.random() - 0.5) * 160, -12, tx2, H * (0.35 + Math.random() * 0.3)),
         born: now + 60 + Math.random() * 120,
-        leader: 40,
-        life: 300 + Math.random() * 150,
+        leader: 30,
+        life: 380 + Math.random() * 180,
         impact: null,
         major: false,
       });
@@ -211,8 +213,9 @@
       ripples.push({ x: tx, y: ty, r: 2, max: 60 + Math.random() * 50, born: now });
     }
 
+    boltFlash = 1;
     lastBoltAt = now;
-    nextIdleBolt = (5000 + Math.random() * 8000) * (1 - stormLevel * 0.55);
+    nextIdleBolt = (2600 + Math.random() * 4200) * (1 - stormLevel * 0.55);
 
     // thunder — only while the set is actually playing (no random rumbles for idle visitors)
     if (window.RaidenAudio && RaidenAudio.ready && RaidenAudio.anyPlaying() && RaidenAudio.thunder && now - lastThunderAt > 3200) {
@@ -229,19 +232,24 @@
     const fade = 1 - age / bolt.life;
     const flicker = 0.72 + Math.random() * 0.28;
 
+    const col = bolt.crawler ? accent2 : accent;
+
     if (age < bolt.leader) {
-      // stepped leader: faint preview crawling down
+      // stepped leader: quick bright preview racing down
       ctx2d.lineCap = "round";
-      ctx2d.strokeStyle = hexA(accent, 0.3 * flicker);
-      ctx2d.lineWidth = 1;
       const frac = age / bolt.leader;
       const upto = Math.floor(bolt.segments.length * frac);
+      ctx2d.strokeStyle = hexA(col, 0.18 * flicker);
+      ctx2d.lineWidth = 4;
       ctx2d.beginPath();
       for (let i = 0; i < upto; i++) {
         const s = bolt.segments[i];
         ctx2d.moveTo(s.x1, s.y1);
         ctx2d.lineTo(s.x2, s.y2);
       }
+      ctx2d.stroke();
+      ctx2d.strokeStyle = hexA(col, 0.55 * flicker);
+      ctx2d.lineWidth = 1.2;
       ctx2d.stroke();
       return true;
     }
@@ -250,37 +258,74 @@
     // photographic double-flash on impact
     if (bolt.major && mAge < 130) {
       const pulse = mAge < 45 ? 1 : mAge < 75 ? 0.35 : mAge < 110 ? 0.7 : 0.2;
-      ctx2d.fillStyle = hexA(accent, 0.07 * pulse * flicker);
+      ctx2d.fillStyle = hexA(accent, 0.12 * pulse * flicker);
       ctx2d.fillRect(0, 0, W, H);
     }
 
-    const ember = fade < 0.45; // afterglow phase
+    const ember = fade < 0.3; // afterglow phase
     ctx2d.lineCap = "round";
     for (const s of bolt.segments) {
       const wMul = s.gen === 0 ? 1 : s.gen === 1 ? 0.55 : 0.35;
       if (!ember) {
-        ctx2d.strokeStyle = hexA(accent, 0.3 * fade * flicker);
-        ctx2d.lineWidth = 8 * wMul;
+        ctx2d.strokeStyle = hexA(col, 0.16 * fade * flicker);
+        ctx2d.lineWidth = 15 * wMul;
         ctx2d.beginPath(); ctx2d.moveTo(s.x1, s.y1); ctx2d.lineTo(s.x2, s.y2); ctx2d.stroke();
-        ctx2d.strokeStyle = `rgba(255,255,255,${0.9 * fade * flicker})`;
-        ctx2d.lineWidth = 1.9 * wMul;
+        ctx2d.strokeStyle = hexA(col, 0.45 * fade * flicker);
+        ctx2d.lineWidth = 6.5 * wMul;
+        ctx2d.beginPath(); ctx2d.moveTo(s.x1, s.y1); ctx2d.lineTo(s.x2, s.y2); ctx2d.stroke();
+        ctx2d.strokeStyle = `rgba(255,255,255,${0.95 * fade * flicker})`;
+        ctx2d.lineWidth = 2.3 * wMul;
         ctx2d.beginPath(); ctx2d.moveTo(s.x1, s.y1); ctx2d.lineTo(s.x2, s.y2); ctx2d.stroke();
       } else {
-        ctx2d.strokeStyle = hexA(accent, 0.4 * fade * flicker);
-        ctx2d.lineWidth = 1.4 * wMul;
+        ctx2d.strokeStyle = hexA(col, 0.55 * fade * flicker);
+        ctx2d.lineWidth = 1.6 * wMul;
         ctx2d.beginPath(); ctx2d.moveTo(s.x1, s.y1); ctx2d.lineTo(s.x2, s.y2); ctx2d.stroke();
       }
     }
 
     // impact glow
     if (bolt.impact && !ember) {
-      const g = ctx2d.createRadialGradient(bolt.impact.x, bolt.impact.y, 0, bolt.impact.x, bolt.impact.y, 70);
-      g.addColorStop(0, hexA(accent, 0.35 * fade));
+      const g = ctx2d.createRadialGradient(bolt.impact.x, bolt.impact.y, 0, bolt.impact.x, bolt.impact.y, 90);
+      g.addColorStop(0, hexA(accent, 0.45 * fade));
       g.addColorStop(1, "rgba(0,0,0,0)");
       ctx2d.fillStyle = g;
-      ctx2d.fillRect(bolt.impact.x - 70, bolt.impact.y - 70, 140, 140);
+      ctx2d.fillRect(bolt.impact.x - 90, bolt.impact.y - 90, 180, 180);
     }
     return true;
+  }
+
+  /* cloud-to-cloud crawler — horizontal lightning snaking across the sky */
+  function displaceH(segs, x0, y0, x1, y1, offset, gen) {
+    if (offset < 5) {
+      segs.push({ x1: x0, y1: y0, x2: x1, y2: y1, gen });
+      return;
+    }
+    const mx = (x0 + x1) / 2 + (Math.random() - 0.5) * offset * 0.3;
+    const my = (y0 + y1) / 2 + (Math.random() - 0.5) * offset;
+    displaceH(segs, x0, y0, mx, my, offset / 2, gen);
+    displaceH(segs, mx, my, x1, y1, offset / 2, gen);
+    if (gen === 0 && Math.random() < 0.12) {
+      // a tendril drips downward
+      displaceH(segs, mx, my, mx + (Math.random() - 0.5) * 60, my + 50 + Math.random() * 80, offset / 2.6, gen + 1);
+    }
+  }
+
+  function crawler() {
+    const y = 30 + Math.random() * H * 0.22;
+    const x0 = Math.random() * W * 0.4;
+    const x1 = x0 + W * (0.3 + Math.random() * 0.5);
+    const segs = [];
+    displaceH(segs, x0, y, x1, y + (Math.random() - 0.5) * 70, (x1 - x0) * 0.2, 0);
+    bolts.push({
+      segments: segs,
+      born: performance.now(),
+      leader: 60,
+      life: 460 + Math.random() * 240,
+      impact: null,
+      major: false,
+      crawler: true,
+    });
+    boltFlash = Math.max(boltFlash, 0.5);
   }
 
   /* ================= layers ================= */
@@ -432,16 +477,21 @@
     if (playing) {
       const b = RaidenAudio.bands();
       low = b.low;
-      if (low > 0.55 && now - lastBoltAt > 2600 * (1 - stormLevel * 0.4)) strike();
+      if (low > 0.55 && now - lastBoltAt > 1800 * (1 - stormLevel * 0.4)) strike();
     } else if (!reduceMotion && now - lastBoltAt > nextIdleBolt) {
       strike();
     }
+    if (!reduceMotion && now > nextCrawlerAt) {
+      crawler();
+      nextCrawlerAt = now + (7000 + Math.random() * 8000) * (1 - stormLevel * 0.5);
+    }
     smoothedLow += (low - smoothedLow) * 0.12;
-    const targetStorm = playing ? Math.min(1, 0.3 + smoothedLow * 1.1) : 0.12;
+    const targetStorm = playing ? Math.min(1, 0.3 + smoothedLow * 1.1) : 0.18;
     stormLevel += (targetStorm - stormLevel) * 0.01;
+    boltFlash *= 0.9;
 
     drawSky();
-    const flashAmt = drawSheet(now);
+    const flashAmt = drawSheet(now) + boltFlash * 0.7;
     drawClouds(flashAmt);
     if (!reduceMotion) drawParticles();
     drawRain();
@@ -475,6 +525,8 @@
     drawStaticFrame();
   } else {
     requestAnimationFrame(frame);
+    // opening move: the storm introduces itself by striking the name
+    setTimeout(() => strike({ title: true }), 1400);
   }
 
   // public: other modules can summon the storm

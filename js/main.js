@@ -50,7 +50,10 @@
     dots.forEach((d) => d.classList.toggle("active", d.dataset.light === name));
     if (save) try { localStorage.setItem("raiden-light", name); } catch (_) {}
   }
-  dots.forEach((d) => d.addEventListener("click", () => setLight(d.dataset.light)));
+  dots.forEach((d) => d.addEventListener("click", () => {
+    setLight(d.dataset.light);
+    if (window.RaidenStrike && !reduceMotion) RaidenStrike(); // new lights, new strike
+  }));
   let savedLight = "storm";
   try { savedLight = localStorage.getItem("raiden-light") || "storm"; } catch (_) {}
   setLight(savedLight, false);
