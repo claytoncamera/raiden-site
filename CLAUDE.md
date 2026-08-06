@@ -2,7 +2,6 @@
 
 <!-- last touched: 2026-08-06 -->
 
-
 > This file is for whichever Claude Code session opens this repo next — most likely **Raiden's**.
 > If you're a human reading this: it's written to brief an AI coding agent with zero prior context
 > on what this project is, what already exists, what's still needed, and what the rules are. Read
@@ -154,5 +153,17 @@ Everything else — HTML, CSS, JS, the whole interactive site — has zero such 
 The punch list above (booking email → social URLs → real bio → real mixes → real gigs, roughly in
 that order of "least effort, most impact") is the highest-leverage next work. Everything else on
 the site already works end-to-end.
-<!-- deploy trigger test 1786041483 -->
-<!-- push-trigger retest 1786041583 -->
+
+## If a deploy doesn't show up
+
+Normally a push to `main` deploys within a minute or two, automatically, no action needed. But if
+you push something and it's genuinely not live after several minutes, GitHub's Actions runners are
+occasionally slow to pick up a job (observed firsthand during this site's setup — not a config
+problem, just intermittent on GitHub's end). You can force it yourself instead of waiting:
+
+```bash
+gh workflow run deploy-pages.yml --repo claytoncamera/raiden-site
+```
+
+Or via the web UI: **Actions tab → "Deploy to GitHub Pages" → Run workflow**. This has reliably
+fixed every stall seen so far — usually completes in under a minute once it actually starts.
