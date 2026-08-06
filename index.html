@@ -12,7 +12,7 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <script type="application/ld+json">
   {
@@ -30,12 +30,15 @@
   <div class="spotlight" id="spotlight" aria-hidden="true"></div>
   <!-- Beat-synced ambient glow -->
   <div class="beat-veil" id="beatVeil" aria-hidden="true"></div>
+  <!-- Film grain (boiler-room lo-fi) -->
+  <div class="grain" aria-hidden="true"></div>
 
   <!-- ============ NAV ============ -->
   <nav class="nav" id="nav">
     <a class="nav-logo" href="#top" aria-label="Raiden — home">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M13 2 L4 14 h6 L9 22 L20 9 h-7 z" fill="currentColor"/></svg>
       <span>RAIDEN</span>
+      <span class="nav-vu" id="navVu" aria-hidden="true"><i></i><i></i><i></i></span>
     </a>
     <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -82,8 +85,8 @@
   <!-- ============ TICKER ============ -->
   <div class="ticker" aria-hidden="true">
     <div class="ticker-track">
-      <span>RAIDEN ⚡ HOUSE ⚡ 雷電 ⚡ TECH HOUSE ⚡ DEEP ⚡ 126 BPM ⚡ DJM-V10 ⚡ TWO DECKS ⚡ NO REQUESTS ⚡ </span>
-      <span>RAIDEN ⚡ HOUSE ⚡ 雷電 ⚡ TECH HOUSE ⚡ DEEP ⚡ 126 BPM ⚡ DJM-V10 ⚡ TWO DECKS ⚡ NO REQUESTS ⚡ </span>
+      <span><b>RAIDEN</b> ⚡ HOUSE ⚡ 雷電 ⚡ TECH HOUSE ⚡ DEEP ⚡ 126 BPM ⚡ <b>DJM-V10</b> ⚡ TWO DECKS ⚡ NO REQUESTS ⚡ </span>
+      <span><b>RAIDEN</b> ⚡ HOUSE ⚡ 雷電 ⚡ TECH HOUSE ⚡ DEEP ⚡ 126 BPM ⚡ <b>DJM-V10</b> ⚡ TWO DECKS ⚡ NO REQUESTS ⚡ </span>
     </div>
   </div>
 
@@ -95,7 +98,16 @@
       <p>This is the rig — a DJM-V10 between two decks. It's real: press play, ride the faders, sweep the filter. Two grooves, one storm. Mix them.</p>
     </div>
 
-    <div class="booth reveal" id="boothRig">
+    <div class="stream reveal" id="stream">
+      <div class="stream-bar">
+        <span class="stream-rec" id="streamRec"><i></i><span id="streamRecLabel">STANDBY</span> <b id="streamClock">00:00</b></span>
+        <span class="stream-title">RAIDEN — LIVE FROM THE STORM</span>
+        <span class="stream-viewers" id="streamViewers">— watching</span>
+      </div>
+      <div class="stream-stage" id="streamStage">
+        <canvas class="beams-canvas" id="beamsCanvas" aria-hidden="true"></canvas>
+
+    <div class="booth" id="boothRig">
       <!-- ======= DECK A ======= -->
       <div class="cdj" data-deck="a">
         <div class="cdj-screen">
@@ -181,6 +193,15 @@
       </div>
     </div>
 
+        <canvas class="crowd-canvas" id="crowdCanvas" aria-hidden="true"></canvas>
+        <div class="stream-scan" aria-hidden="true"></div>
+      </div>
+      <aside class="chat" aria-label="Crowd chat (simulated)">
+        <div class="chat-head"><span>CROWD</span><em>chat&nbsp;sim</em></div>
+        <div class="chat-log" id="chatLog"></div>
+      </aside>
+    </div>
+
     <p class="booth-hint reveal">Headphones recommended. Start Deck A, bring in Deck B on the crossfader, cut the kick, sweep the filter — you're mixing.</p>
   </section>
 
@@ -199,7 +220,7 @@
         <div class="mix-art mix-art-1"><span class="mix-art-bolt">⚡</span></div>
         <div class="mix-card-body">
           <h3>STORMFRONT 001</h3>
-          <p class="mix-meta">Deep · Tech House — 60 min</p>
+          <p class="mix-meta">Deep · Tech House <span class="mix-rt">RT 60:00</span></p>
           <span class="mix-status">Dropping soon</span>
         </div>
       </article>
@@ -207,7 +228,7 @@
         <div class="mix-art mix-art-2"><span class="mix-art-bolt">⚡</span></div>
         <div class="mix-card-body">
           <h3>AFTER THE THUNDER</h3>
-          <p class="mix-meta">Deep House · Sunrise set — 90 min</p>
+          <p class="mix-meta">Deep House · Sunrise set <span class="mix-rt">RT 90:00</span></p>
           <span class="mix-status">Dropping soon</span>
         </div>
       </article>
@@ -215,7 +236,7 @@
         <div class="mix-art mix-art-3"><span class="mix-art-bolt">⚡</span></div>
         <div class="mix-card-body">
           <h3>HIGH VOLTAGE</h3>
-          <p class="mix-meta">Peak Time · Club set — 75 min</p>
+          <p class="mix-meta">Peak Time · Club set <span class="mix-rt">RT 75:00</span></p>
           <span class="mix-status">Dropping soon</span>
         </div>
       </article>
@@ -354,6 +375,8 @@
   <script src="js/audio.js"></script>
   <script src="js/visualizer.js"></script>
   <script src="js/booth.js"></script>
+  <script src="js/scene.js"></script>
+  <script src="js/chat.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

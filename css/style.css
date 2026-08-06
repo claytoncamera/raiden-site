@@ -6,6 +6,7 @@
 :root {
   --font-display: "Unbounded", system-ui, sans-serif;
   --font-body: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --bg: #07070b;
   --bg-2: #0d0d15;
@@ -93,6 +94,24 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   will-change: opacity;
 }
 
+.grain {
+  position: fixed;
+  inset: -120px;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+  animation: grainShift 1.1s steps(6) infinite;
+}
+@keyframes grainShift {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-34px, 22px); }
+  40% { transform: translate(18px, -40px); }
+  60% { transform: translate(-46px, -12px); }
+  80% { transform: translate(30px, 34px); }
+  100% { transform: translate(0, 0); }
+}
+
 /* ---------- buttons ---------- */
 .btn {
   display: inline-flex;
@@ -159,6 +178,23 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   color: var(--text);
 }
 .nav-logo svg { color: var(--accent); transition: color 0.4s ease; }
+
+.nav-vu {
+  display: none;
+  align-items: flex-end;
+  gap: 2px;
+  height: 13px;
+  margin-left: 0.5rem;
+}
+.nav-vu.on { display: inline-flex; }
+.nav-vu i {
+  width: 3px;
+  height: 3px;
+  border-radius: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--glow);
+  transition: height 0.09s linear;
+}
 
 .nav-links {
   display: flex;
@@ -249,7 +285,10 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   font-weight: 900;
   letter-spacing: 0.04em;
   color: var(--text);
-  text-shadow: 0 0 60px var(--glow);
+  text-shadow:
+    2px 0 0 rgba(255, 60, 90, 0.18),
+    -2px 0 0 rgba(60, 220, 255, 0.18),
+    0 0 60px var(--glow);
   transition: text-shadow 0.6s ease;
 }
 .hero-title span {
@@ -316,6 +355,11 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   color: var(--text-dim);
   padding-right: 1rem;
 }
+.ticker-track b {
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--accent);
+}
 @keyframes tickerScroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -331,12 +375,15 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 }
 .section-head { margin-bottom: clamp(2.2rem, 5vw, 3.6rem); max-width: 640px; }
 .section-num {
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  letter-spacing: 0.3em;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   color: var(--accent);
   transition: color 0.4s ease;
 }
+.section-num::before { content: "[ "; opacity: 0.6; }
+.section-num::after { content: " ]"; opacity: 0.6; }
 .section-head h2 {
   font-size: clamp(1.9rem, 5.5vw, 3.2rem);
   font-weight: 700;
@@ -355,14 +402,144 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 .reveal.visible { opacity: 1; transform: none; }
 
 /* ============================================================
+   THE STREAM (boiler-room frame)
+   ============================================================ */
+.stream {
+  display: grid;
+  grid-template-columns: 1fr 250px;
+  grid-template-rows: auto 1fr;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #05050a;
+  box-shadow: 0 40px 90px -50px rgba(0, 0, 0, 1);
+}
+
+.stream-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+.stream-rec { display: inline-flex; align-items: center; gap: 0.45rem; white-space: nowrap; }
+.stream-rec i {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #4a4a58;
+  flex: none;
+}
+.stream-rec.live i { background: #ff3b3b; box-shadow: 0 0 10px #ff3b3b; animation: recBlink 1.2s steps(2) infinite; }
+@keyframes recBlink { 50% { opacity: 0.35; } }
+.stream-rec.live { color: var(--text); }
+.stream-rec b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.stream-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  flex: 1;
+}
+.stream-viewers { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.stream-stage {
+  position: relative;
+  padding: clamp(1rem, 2.5vw, 1.8rem);
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% -20%, rgba(255, 255, 255, 0.05), transparent 55%),
+    #050509;
+}
+.beams-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+.crowd-canvas {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+.stream-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 3px);
+  opacity: 0.55;
+}
+.stream-scan::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+/* chat rail */
+.chat {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--line);
+  background: #07070d;
+  min-height: 0;
+}
+.chat-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--text-dim);
+}
+.chat-head em { font-style: normal; opacity: 0.55; letter-spacing: 0.08em; }
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.45;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+  min-height: 0;
+}
+.chat-msg { animation: chatIn 0.25s ease backwards; word-break: break-word; }
+@keyframes chatIn { from { opacity: 0; transform: translateY(6px); } }
+.chat-msg b { font-weight: 600; margin-right: 0.4em; }
+.chat-msg span { color: var(--text-dim); }
+
+/* ============================================================
    THE BOOTH
    ============================================================ */
 .booth {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr 1.15fr 1fr;
   gap: clamp(0.8rem, 2vw, 1.4rem);
   align-items: stretch;
   perspective: 1400px;
+  transition: transform 0.18s ease-out;
+  will-change: transform;
 }
 
 /* ----- CDJ ----- */
@@ -808,6 +985,14 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   margin-bottom: 0.3rem;
 }
 .mix-meta { color: var(--text-dim); font-size: 0.82rem; margin-bottom: 0.7rem; }
+.mix-rt {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  opacity: 0.85;
+  margin-left: 0.5em;
+}
 .mix-status {
   display: inline-block;
   font-family: var(--font-display);
@@ -1102,6 +1287,10 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   .booth { grid-template-columns: 1fr; }
   .mixer { order: 3; }
   .about-grid { grid-template-columns: 1fr; }
+  .stream { grid-template-columns: 1fr; }
+  .chat { border-left: none; border-top: 1px solid var(--line); }
+  .chat-log { max-height: 190px; }
+  .stream-title { display: none; }
 }
 
 @media (max-width: 760px) {
@@ -1152,4 +1341,8 @@ html.static-mode { scroll-behavior: auto; }
   .platter.spinning .platter-disc { animation-duration: 6s; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .spotlight, .beat-veil { display: none; }
+  .grain { animation: none; opacity: 0.035; }
+  .stream-rec.live i { animation: none; }
+  .chat-msg { animation: none; }
+  .booth { transition: none; }
 }

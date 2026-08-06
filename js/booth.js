@@ -18,6 +18,11 @@
   const stripsHost = document.getElementById("mixerStrips");
   if (!stripsHost) return;
 
+  // broadcast booth actions (chat + any future listeners)
+  function act(type, data) {
+    window.dispatchEvent(new CustomEvent("raiden:action", { detail: { type, ...data } }));
+  }
+
   /* ---------- build channel strips ---------- */
   const meters = {}; // role -> [segment els]
   for (const { role, label } of STRIPS) {
@@ -40,6 +45,7 @@
     if (!e.target.classList.contains("fader")) return;
     RaidenAudio.init();
     RaidenAudio.setFader(e.target.dataset.role, e.target.value / 100);
+    act("fader", { role: e.target.dataset.role, v: e.target.value / 100 });
   });
 
   stripsHost.addEventListener("click", (e) => {
@@ -48,6 +54,7 @@
     RaidenAudio.init();
     const muted = RaidenAudio.toggleMute(btn.dataset.role);
     btn.classList.toggle("muted", muted);
+    act("mute", { role: btn.dataset.role, muted });
   });
 
   /* ---------- transport ---------- */
@@ -71,10 +78,12 @@
         const on = RaidenAudio.toggleDeck(deck);
         setDeckUI(deck, on);
         if (on && window.RaidenStrike) window.RaidenStrike();
+        act("play", { deck, on });
       } else {
         RaidenAudio.init();
         RaidenAudio.cueDeck(deck);
         setDeckUI(deck, false);
+        act("cue", { deck });
       }
     });
   });
@@ -96,6 +105,7 @@
   xfader.addEventListener("input", () => {
     RaidenAudio.init();
     RaidenAudio.setCrossfade(xfader.value / 100);
+    act("xfade", { v: xfader.value / 100 });
   });
 
   /* ---------- filter knob ---------- */
@@ -113,6 +123,7 @@
     knob.setAttribute("aria-valuenow", Math.round(knobValue * 100));
     RaidenAudio.init();
     RaidenAudio.setFilter(knobValue);
+    act("filter", { v: knobValue });
   }
 
   knob.addEventListener("pointerdown", (e) => {

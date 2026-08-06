@@ -29,6 +29,7 @@
     attributeFilter: ["data-light"],
   });
 
+  let crowd = [];
   function resize() {
     dpr = Math.min(2, window.devicePixelRatio || 1);
     W = canvas.clientWidth;
@@ -37,6 +38,24 @@
     canvas.height = H * dpr;
     ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
     seedParticles();
+    seedCrowd();
+  }
+
+  function seedCrowd() {
+    crowd = [];
+    for (let x = -10; x < W + 10; x += 40 + Math.random() * 26) {
+      const roll = Math.random();
+      crowd.push({
+        x: x + Math.random() * 12,
+        r: 14 + Math.random() * 9,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.8 + Math.random() * 0.9,
+        arm: roll < 0.12 ? "hand" : roll < 0.2 ? "phone" : null,
+        armSide: Math.random() < 0.5 ? -1 : 1,
+        armThresh: 0.4 + Math.random() * 0.25,
+        armUp: 0,
+      });
+    }
   }
 
   function seedParticles() {
@@ -165,6 +184,47 @@
       }
     }
     bolts = alive;
+
+    // crowd silhouettes along the bottom (in front of the storm)
+    const t = now * 0.0016;
+    for (const h of crowd) {
+      const bob = reduceMotion ? 0 : Math.sin(t * h.speed + h.phase) * 2.4 + smoothedLow * 6;
+      const headY = H - h.r * 1.55 - bob;
+
+      const wantUp = !reduceMotion && h.arm && smoothedLow > h.armThresh;
+      h.armUp += ((wantUp ? 1 : 0) - h.armUp) * 0.07;
+      if (h.arm && h.armUp > 0.03) {
+        const ax = h.x + h.armSide * h.r * 0.9;
+        const hy = headY - h.r * 2.5 * h.armUp;
+        ctx2d.strokeStyle = "#04040a";
+        ctx2d.lineWidth = Math.max(3.5, h.r * 0.36);
+        ctx2d.lineCap = "round";
+        ctx2d.beginPath();
+        ctx2d.moveTo(ax, headY + h.r * 0.9);
+        ctx2d.lineTo(ax + h.armSide * 5, hy);
+        ctx2d.stroke();
+        if (h.arm === "phone") {
+          ctx2d.fillStyle = hexA(accent2, 0.7 * h.armUp);
+          ctx2d.shadowColor = accent2;
+          ctx2d.shadowBlur = 9 * h.armUp;
+          ctx2d.fillRect(ax + h.armSide * 5 - 3.5, hy - 10, 7, 11);
+          ctx2d.shadowBlur = 0;
+        } else {
+          ctx2d.fillStyle = "#04040a";
+          ctx2d.beginPath();
+          ctx2d.arc(ax + h.armSide * 5, hy - 2, h.r * 0.3, 0, Math.PI * 2);
+          ctx2d.fill();
+        }
+      }
+
+      ctx2d.fillStyle = "#04040a";
+      ctx2d.beginPath();
+      ctx2d.arc(h.x, headY, h.r, 0, Math.PI * 2);
+      ctx2d.fill();
+      ctx2d.beginPath();
+      ctx2d.ellipse(h.x, H + h.r * 0.35, h.r * 1.9, h.r * 1.6, 0, Math.PI, 0);
+      ctx2d.fill();
+    }
 
     requestAnimationFrame(frame);
   }

@@ -83,21 +83,73 @@
   );
   document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-  /* ---------- beat veil (glow pulses with the low end) ---------- */
+  /* ---------- beat veil + nav VU (pulse with the music) ---------- */
   const veil = document.getElementById("beatVeil");
+  const navVu = document.getElementById("navVu");
+  const vuBars = navVu ? Array.from(navVu.children) : [];
   if (!reduceMotion) {
     let smooth = 0;
     (function pulse() {
-      if (window.RaidenAudio && RaidenAudio.ready && RaidenAudio.anyPlaying()) {
+      const playing = window.RaidenAudio && RaidenAudio.ready && RaidenAudio.anyPlaying();
+      if (playing) {
         const b = RaidenAudio.bands();
         smooth += (b.low - smooth) * 0.25;
         veil.style.opacity = (smooth * 0.14).toFixed(3);
-      } else if (smooth > 0.001) {
-        smooth *= 0.94;
-        veil.style.opacity = (smooth * 0.14).toFixed(3);
+        if (navVu) {
+          navVu.classList.add("on");
+          vuBars[0].style.height = `${3 + b.low * 10}px`;
+          vuBars[1].style.height = `${3 + b.mid * 10}px`;
+          vuBars[2].style.height = `${3 + b.high * 10}px`;
+        }
+      } else {
+        if (smooth > 0.001) {
+          smooth *= 0.94;
+          veil.style.opacity = (smooth * 0.14).toFixed(3);
+        }
+        if (navVu) navVu.classList.remove("on");
       }
       requestAnimationFrame(pulse);
     })();
+  }
+
+  /* ---------- stream bar: REC clock + viewers ---------- */
+  const recPill = document.getElementById("streamRec");
+  const recLabel = document.getElementById("streamRecLabel");
+  const clock = document.getElementById("streamClock");
+  const viewersEl = document.getElementById("streamViewers");
+  let viewers = 0;
+  if (recPill) {
+    setInterval(() => {
+      const playing = window.RaidenAudio && RaidenAudio.ready && RaidenAudio.anyPlaying();
+      recPill.classList.toggle("live", !!playing);
+      recLabel.textContent = playing ? "LIVE" : "STANDBY";
+      if (playing) {
+        const s = Math.max(RaidenAudio.deckElapsed("a"), RaidenAudio.deckElapsed("b"));
+        const m = Math.floor(s / 60);
+        clock.textContent = `${String(m).padStart(2, "0")}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+        if (!viewers) viewers = 84 + Math.floor(Math.random() * 70);
+        viewers = Math.max(60, viewers + Math.floor(Math.random() * 7) - 2);
+        viewersEl.textContent = `${viewers.toLocaleString()} watching`;
+      } else {
+        clock.textContent = "00:00";
+        if (viewers) { viewers = 0; viewersEl.textContent = "— watching"; }
+      }
+    }, 1000);
+  }
+
+  /* ---------- camera tilt on the rig (fine pointers only) ---------- */
+  const streamStage = document.getElementById("streamStage");
+  const boothRig = document.getElementById("boothRig");
+  if (streamStage && boothRig && !reduceMotion && window.matchMedia("(pointer: fine)").matches) {
+    streamStage.addEventListener("pointermove", (e) => {
+      const r = streamStage.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5;
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      boothRig.style.transform = `perspective(1400px) rotateY(${nx * 2.4}deg) rotateX(${-ny * 1.6}deg)`;
+    });
+    streamStage.addEventListener("pointerleave", () => {
+      boothRig.style.transform = "";
+    });
   }
 
   /* ---------- hero CTA ---------- */
