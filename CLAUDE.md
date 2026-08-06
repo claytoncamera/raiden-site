@@ -105,7 +105,15 @@ never fake data. These are the actual gaps, each marked `EDITME` in source:
 
 This is **GitHub Pages**, building from the `main` branch root. A `CNAME` file in the repo root
 points it at raiden.biz. **Pushing to `main` deploys automatically** — there is no separate build
-or release step. Pages usually goes live within about a minute of a push.
+or release step. Pages usually goes live within about a minute of a push (occasionally GitHub's
+build queue itself gets stuck and needs a retry — if a push isn't showing up live after a few
+minutes, that's a GitHub-side hiccup, not a problem with the code; just push again or wait it out).
+
+**Contributing changes back:** the repo is currently owned by Clayton (`claytoncamera/raiden-site`,
+public). If you don't have direct push access to `main`, the normal flow is: fork it, make changes
+on the fork, open a Pull Request — Clayton reviews and merges, which deploys automatically. If
+you've been given direct collaborator access instead, you can push straight to `main`. Either way
+works with this repo; ask Clayton which he'd prefer if it's not obvious.
 
 HTTPS is live (`https://raiden.biz` serves a valid cert). The `www` subdomain redirects to the
 apex. `robots.txt` / `sitemap.xml` / OG share image (`assets/og.png`) / apple-touch-icon are all
