@@ -96,9 +96,27 @@
   }
 
   /* ---------- hero CTA ---------- */
+  // some environments silently drop smooth scrolls — verify movement, fall back to instant
+  function scrollToEl(el) {
+    const startY = window.scrollY;
+    el.scrollIntoView({ behavior: reduceMotion ? "instant" : "smooth" });
+    setTimeout(() => {
+      if (Math.abs(window.scrollY - startY) < 5) el.scrollIntoView({ behavior: "instant" });
+    }, 400);
+  }
   document.getElementById("dropBeatBtn").addEventListener("click", () => {
     if (window.RaidenBooth) RaidenBooth.dropTheBeat();
-    document.getElementById("booth").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    scrollToEl(document.getElementById("booth"));
+  });
+
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const target = document.querySelector(a.getAttribute("href"));
+    if (!target) return;
+    e.preventDefault();
+    history.pushState(null, "", a.getAttribute("href"));
+    scrollToEl(target);
   });
 
   /* ---------- toast ---------- */

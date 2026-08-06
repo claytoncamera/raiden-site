@@ -54,7 +54,7 @@ body {
   color: var(--text);
   font-family: var(--font-body);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip; /* clip, not hidden: hidden makes body a scroll container and breaks scrollIntoView */
   transition: background 0.6s ease;
 }
 

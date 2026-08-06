@@ -5,7 +5,7 @@
    Roles (mixer channels): KICK HATS PERC BASS CHORDS LEAD
    ============================================================ */
 
-const RaidenAudio = (() => {
+window.RaidenAudio = (() => {
   const BPM = 126;
   const STEPS_PER_BAR = 16;
   const SECONDS_PER_STEP = 60 / BPM / 4;
