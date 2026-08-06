@@ -387,6 +387,45 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 }
 @media (prefers-reduced-motion: reduce) { .hero-hint { display: none; } }
 
+.hero-nowplaying {
+  position: absolute;
+  left: clamp(1rem, 3vw, 2.4rem);
+  bottom: 1.5rem;
+  z-index: 2;
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--text);
+  background: rgba(7, 7, 12, 0.6);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 18px var(--accent-soft);
+}
+.hero-nowplaying.on { display: inline-flex; }
+.hero-nowplaying i {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #ff3b3b;
+  box-shadow: 0 0 8px #ff3b3b;
+  animation: recBlink 1.2s steps(2) infinite;
+}
+
+/* hero entrance stagger */
+.hero-kicker, .hero-tagline, .hero-ctas { animation: fadeUp 0.8s ease backwards; }
+.hero-kicker { animation-delay: 0.15s; }
+.hero-tagline { animation-delay: 0.65s; }
+.hero-ctas { animation-delay: 0.85s; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* ---------- ticker ---------- */
 .ticker {
   overflow: hidden;
@@ -1093,6 +1132,83 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 .newsletter input:focus { outline: none; border-color: var(--accent); }
 
 /* ============================================================
+   MERCH
+   ============================================================ */
+.merch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+.merch-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.merch-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent);
+  box-shadow: 0 20px 50px -24px var(--glow);
+}
+.merch-art {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background:
+    radial-gradient(circle at 50% 40%, var(--accent-soft), transparent 65%),
+    #08080f;
+  border-bottom: 1px solid var(--line);
+}
+.merch-art svg {
+  width: 72%;
+  height: 72%;
+}
+.merch-art .garment {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.merch-art .mark {
+  fill: var(--accent);
+  transition: fill 0.4s ease;
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+.merch-card:hover .mark { animation: markFlicker 0.6s steps(2) 2; }
+@keyframes markFlicker { 50% { opacity: 0.25; } }
+.merch-body { padding: 1rem 1.1rem 1.2rem; }
+.merch-body h3 { font-size: 0.92rem; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+.merch-body p { color: var(--text-dim); font-size: 0.82rem; margin-bottom: 0.7rem; }
+.merch-drop {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--accent-2);
+  border: 1px solid var(--accent-2);
+  border-radius: 999px;
+  padding: 0.26rem 0.7rem;
+  opacity: 0.85;
+  position: relative;
+  overflow: hidden;
+}
+.merch-drop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.18) 50%, transparent 80%);
+  transform: translateX(-100%);
+  animation: chargeSweep 3.2s ease-in-out infinite;
+}
+@keyframes chargeSweep { 60%, 100% { transform: translateX(100%); } }
+
+/* ============================================================
    DATES
    ============================================================ */
 .dates-board {
@@ -1340,6 +1456,67 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 .footer-socials a:hover { color: var(--accent); }
 .footer-fine { font-size: 0.75rem; color: var(--text-dim); opacity: 0.7; }
 
+/* ---------- scroll progress + back to top ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 100%;
+  z-index: 95;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+.back-top {
+  position: fixed;
+  right: 1.3rem;
+  bottom: 1.3rem;
+  z-index: 80;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(12, 12, 20, 0.8);
+  color: var(--accent);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.2s ease;
+}
+.back-top.show { opacity: 1; pointer-events: auto; transform: none; }
+.back-top:hover { border-color: var(--accent); box-shadow: 0 0 18px var(--accent-soft); }
+
+/* nav active section */
+.nav-links > a.active { color: var(--accent); }
+
+/* about → booking cross-link */
+.about-cta { margin-top: 1.2rem; }
+.about-cta a {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.about-cta a:hover { border-bottom-color: var(--accent); }
+
+/* footer quick links */
+.footer-links { display: flex; gap: 1.3rem; flex-wrap: wrap; }
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  transition: color 0.2s ease;
+}
+.footer-links a:hover { color: var(--accent); }
+
 /* ---------- toast ---------- */
 .toast {
   position: fixed;
@@ -1429,4 +1606,9 @@ html.static-mode { scroll-behavior: auto; }
   .hero-title span:nth-child(5) { animation: none; }
   .mix-art::before { animation: none; opacity: 0; }
   .hero-title.jolt { transform: none; }
+  .hero-kicker, .hero-tagline, .hero-ctas { animation: none; }
+  .merch-drop::after { animation: none; }
+  .merch-card:hover .mark { animation: none; }
+  .hero-nowplaying i { animation: none; }
+  .back-top { transition: none; }
 }

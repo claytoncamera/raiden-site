@@ -29,6 +29,8 @@
 </head>
 <body>
 
+  <!-- Scroll progress -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <!-- Cursor spotlight (desktop only) -->
   <div class="spotlight" id="spotlight" aria-hidden="true"></div>
   <!-- Beat-synced ambient glow -->
@@ -50,6 +52,7 @@
       <a href="#booth">Booth</a>
       <a href="#mixes">Mixes</a>
       <a href="#dates">Dates</a>
+      <a href="#merch">Merch</a>
       <a href="#about">About</a>
       <a href="#press">Press</a>
       <div class="light-desk" role="group" aria-label="Lighting presets">
@@ -86,6 +89,7 @@
       <span class="hero-scroll-line"></span>
     </a>
     <span class="hero-hint" aria-hidden="true">[ tap the sky ]</span>
+    <a class="hero-nowplaying" id="heroNowPlaying" href="#booth"><i></i><span id="heroNowPlayingText">LIVE</span></a>
   </header>
 
   <!-- ============ TICKER ============ -->
@@ -280,10 +284,89 @@
     </div>
   </section>
 
+  <!-- ============ MERCH ============ -->
+  <section class="section" id="merch">
+    <div class="section-head reveal">
+      <span class="section-num">04</span>
+      <h2>Merch</h2>
+      <p>Stormwear. First drop is in the lab — cut, printed, and struck by the same bolt as everything else here.</p>
+    </div>
+    <div class="merch-grid">
+      <!-- EDITME: when Drop 001 is real, add prices + link each card to the store (Fourthwall/Shopify/etc.) -->
+      <article class="merch-card reveal">
+        <div class="merch-art merch-art-1">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <path class="garment" d="M35 16 L20 27 L27 41 L34 36 L34 86 L66 86 L66 36 L73 41 L80 27 L65 16 C61 22 39 22 35 16 Z" />
+            <path class="garment" d="M35 16 C39 22 61 22 65 16" />
+            <path class="mark" d="M52 38 L44 50 h5 L46 60 L56 47 h-6 z" />
+          </svg>
+        </div>
+        <div class="merch-body">
+          <h3>BOLT TEE</h3>
+          <p>Void black · storm print</p>
+          <span class="merch-drop">DROP 001</span>
+        </div>
+      </article>
+      <article class="merch-card reveal">
+        <div class="merch-art merch-art-2">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <path class="garment" d="M36 20 L21 30 L28 44 L34 39 L34 88 L66 88 L66 39 L72 44 L79 30 L64 20 C63 13 37 13 36 20 Z" />
+            <path class="garment" d="M36 20 C40 28 60 28 64 20" />
+            <path class="garment" d="M41 66 L59 66 L62 80 L38 80 Z" />
+            <path class="garment" d="M46 28 L46 38 M54 28 L54 38" />
+            <path class="mark" d="M52 44 L44 56 h5 L46 66 L56 53 h-6 z" />
+          </svg>
+        </div>
+        <div class="merch-body">
+          <h3>雷電 HOODIE</h3>
+          <p>Heavyweight · kanji back print</p>
+          <span class="merch-drop">DROP 001</span>
+        </div>
+      </article>
+      <article class="merch-card reveal">
+        <div class="merch-art merch-art-3">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <path class="garment" d="M30 56 C30 34 70 34 70 56" />
+            <path class="garment" d="M30 56 L70 56 C79 56 84 60 83 64 C70 60 40 60 22 66 C21 61 24 56 30 56 Z" />
+            <path class="garment" d="M50 34 L50 30" />
+            <path class="mark" d="M52 40 L46 49 h4 L48 56 L56 46 h-5 z" />
+          </svg>
+        </div>
+        <div class="merch-body">
+          <h3>STORM CAP</h3>
+          <p>Unstructured · embroidered bolt</p>
+          <span class="merch-drop">DROP 001</span>
+        </div>
+      </article>
+      <article class="merch-card reveal">
+        <div class="merch-art merch-art-4">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="garment" cx="50" cy="50" r="34" />
+            <circle class="garment" cx="50" cy="50" r="5" />
+            <circle class="garment" cx="50" cy="50" r="22" opacity="0.4" />
+            <path class="mark" d="M54 30 L42 48 h6 L44 70 L60 44 h-8 z" opacity="0.9" />
+          </svg>
+        </div>
+        <div class="merch-body">
+          <h3>SLIPMAT PAIR</h3>
+          <p>12&Prime; felt · strike graphic</p>
+          <span class="merch-drop">DROP 001</span>
+        </div>
+      </article>
+    </div>
+    <div class="mix-follow reveal">
+      <p>Drop 001 is charging — get struck first:</p>
+      <form class="newsletter">
+        <input type="email" placeholder="your@email.com" aria-label="Email address" required />
+        <button type="submit" class="btn btn-accent btn-small">Notify me</button>
+      </form>
+    </div>
+  </section>
+
   <!-- ============ ABOUT ============ -->
   <section class="section" id="about">
     <div class="section-head reveal">
-      <span class="section-num">04</span>
+      <span class="section-num">05</span>
       <h2>About</h2>
     </div>
     <div class="about-grid">
@@ -292,6 +375,7 @@
         <p class="about-lead">Raiden — 雷電, "thunder and lightning." The name is the sound: rolling low-end you feel in your chest, hats that crackle like static, and drops that land like a strike.</p>
         <p>Raiden plays house — deep and hypnotic early, tech and peak-time late. Long blends, patient builds, no gimmicks. The kind of set where you look up and two hours are gone.</p>
         <p>Behind the decks it's a Pioneer DJM-V10 and two CDJs — six channels of room to layer, cut, and sculpt in real time. That's why the booth on this site is playable: it's the actual instrument, scaled down to your browser.</p>
+        <p class="about-cta"><a href="#book">Bring the storm to your city →</a></p>
       </div>
       <div class="about-side reveal">
         <div class="rig-card">
@@ -315,7 +399,7 @@
   <!-- ============ PRESS / EPK ============ -->
   <section class="section" id="press">
     <div class="section-head reveal">
-      <span class="section-num">05</span>
+      <span class="section-num">06</span>
       <h2>Press Kit</h2>
       <p>Everything a promoter needs, one click away.</p>
     </div>
@@ -334,7 +418,7 @@
   <!-- ============ BOOKING ============ -->
   <section class="section section-book" id="book">
     <div class="section-head reveal">
-      <span class="section-num">06</span>
+      <span class="section-num">07</span>
       <h2>Book Raiden</h2>
       <p>Clubs, festivals, warehouses, boats — if it has power, it can have thunder.</p>
     </div>
@@ -373,11 +457,23 @@
         <a href="#" data-social="youtube" aria-label="YouTube">YouTube</a>
         <a href="#" data-social="spotify" aria-label="Spotify">Spotify</a>
       </div>
+      <nav class="footer-links" aria-label="Site sections">
+        <a href="#booth">Booth</a>
+        <a href="#mixes">Mixes</a>
+        <a href="#dates">Dates</a>
+        <a href="#merch">Merch</a>
+        <a href="#about">About</a>
+        <a href="#press">Press</a>
+        <a href="#book">Booking</a>
+      </nav>
       <p class="footer-fine">© <span id="year"></span> RAIDEN. All thunder reserved.</p>
     </div>
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <button class="back-top" id="backTop" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M13 2 L4 14 h6 L9 22 L20 9 h-7 z" fill="currentColor"/></svg>
+  </button>
 
   <script src="js/audio.js"></script>
   <script src="js/visualizer.js"></script>

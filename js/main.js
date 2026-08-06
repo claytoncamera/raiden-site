@@ -251,12 +251,14 @@
     }
   });
 
-  /* ---------- newsletter ---------- */
-  document.getElementById("newsletterForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    // EDITME: connect Mailchimp/Buttondown/Resend here (see README)
-    showToast("⚡ List opens soon — the first drop goes out to it.");
-    e.target.reset();
+  /* ---------- newsletter (all .newsletter forms share the handler) ---------- */
+  document.querySelectorAll(".newsletter").forEach((form) => {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      // EDITME: connect Mailchimp/Buttondown/Resend here (see README)
+      showToast("⚡ List opens soon — the first drop goes out to it.");
+      e.target.reset();
+    });
   });
 
   /* ---------- socials ---------- */
@@ -273,6 +275,66 @@
       });
     }
   });
+
+  /* ---------- scroll-spy: highlight the section you're in ---------- */
+  const spyLinks = new Map();
+  document.querySelectorAll('.nav-links > a[href^="#"]').forEach((a) => {
+    const id = a.getAttribute("href").slice(1);
+    if (document.getElementById(id)) spyLinks.set(id, a);
+  });
+  const spy = new IntersectionObserver(
+    (entries) => {
+      for (const en of entries) {
+        if (!en.isIntersecting) continue;
+        spyLinks.forEach((a, id) => a.classList.toggle("active", id === en.target.id));
+      }
+    },
+    { rootMargin: "-35% 0px -55% 0px" }
+  );
+  spyLinks.forEach((_, id) => spy.observe(document.getElementById(id)));
+
+  /* ---------- scroll progress + back-to-top + kanji drift ---------- */
+  const progressBar = document.getElementById("scrollProgress");
+  const backTop = document.getElementById("backTop");
+  const kanjiL = document.querySelector(".hero-kanji-l");
+  const kanjiR = document.querySelector(".hero-kanji-r");
+  let scrollTick = false;
+  window.addEventListener("scroll", () => {
+    if (scrollTick) return;
+    scrollTick = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (progressBar) progressBar.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
+      if (backTop) backTop.classList.toggle("show", y > 700);
+      if (!reduceMotion && y < window.innerHeight) {
+        if (kanjiL) kanjiL.style.transform = `translateY(${y * 0.12}px)`;
+        if (kanjiR) kanjiR.style.transform = `translateY(${-y * 0.08}px)`;
+      }
+      scrollTick = false;
+    });
+  }, { passive: true });
+  if (backTop) {
+    backTop.addEventListener("click", () => {
+      reduceMotion ? window.scrollTo(0, 0) : window.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(() => { if (window.scrollY > 50) window.scrollTo(0, 0); }, 450);
+    });
+  }
+
+  /* ---------- hero "now playing" chip ---------- */
+  const npChip = document.getElementById("heroNowPlaying");
+  const npText = document.getElementById("heroNowPlayingText");
+  if (npChip) {
+    setInterval(() => {
+      const ready = window.RaidenAudio && RaidenAudio.ready;
+      const a = ready && RaidenAudio.isPlaying("a");
+      const b = ready && RaidenAudio.isPlaying("b");
+      npChip.classList.toggle("on", !!(a || b));
+      if (a || b) {
+        npText.textContent = `LIVE — ${a && b ? "VOLTAGE + ION RAIN" : a ? "VOLTAGE" : "ION RAIN"} · 126`;
+      }
+    }, 800);
+  }
 
   /* ---------- footer year ---------- */
   document.getElementById("year").textContent = new Date().getFullYear();
