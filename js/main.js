@@ -87,6 +87,7 @@
   const veil = document.getElementById("beatVeil");
   const navVu = document.getElementById("navVu");
   const vuBars = navVu ? Array.from(navVu.children) : [];
+  const titleGlowEl = document.querySelector(".hero-title");
   if (!reduceMotion) {
     let smooth = 0;
     (function pulse() {
@@ -101,6 +102,7 @@
           vuBars[1].style.height = `${3 + b.mid * 10}px`;
           vuBars[2].style.height = `${3 + b.high * 10}px`;
         }
+        if (titleGlowEl) titleGlowEl.style.setProperty("--tg", `${Math.round(55 + b.low * 90)}px`);
       } else {
         if (smooth > 0.001) {
           smooth *= 0.94;
@@ -152,17 +154,6 @@
     }
   });
 
-  // title glow breathes with the low end
-  if (heroTitle && !reduceMotion) {
-    (function glowLoop() {
-      if (window.RaidenAudio && RaidenAudio.ready && RaidenAudio.anyPlaying()) {
-        const b = RaidenAudio.bands();
-        heroTitle.style.setProperty("--tg", `${Math.round(55 + b.low * 90)}px`);
-      }
-      requestAnimationFrame(glowLoop);
-    })();
-  }
-
   // gentle hero parallax + fade on scroll
   if (heroInner && !reduceMotion) {
     let ticking = false;
@@ -212,10 +203,12 @@
   document.addEventListener("click", (e) => {
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
-    const target = document.querySelector(a.getAttribute("href"));
+    const href = a.getAttribute("href");
+    if (href === "#") return; // placeholder links handle themselves
+    const target = document.getElementById(href.slice(1));
     if (!target) return;
     e.preventDefault();
-    history.pushState(null, "", a.getAttribute("href"));
+    history.pushState(null, "", href);
     scrollToEl(target);
   });
 

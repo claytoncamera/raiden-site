@@ -214,8 +214,8 @@
     lastBoltAt = now;
     nextIdleBolt = (5000 + Math.random() * 8000) * (1 - stormLevel * 0.55);
 
-    // thunder — only after the visitor has already unlocked audio in the booth
-    if (window.RaidenAudio && RaidenAudio.ready && RaidenAudio.thunder && now - lastThunderAt > 3200) {
+    // thunder — only while the set is actually playing (no random rumbles for idle visitors)
+    if (window.RaidenAudio && RaidenAudio.ready && RaidenAudio.anyPlaying() && RaidenAudio.thunder && now - lastThunderAt > 3200) {
       lastThunderAt = now;
       setTimeout(() => RaidenAudio.thunder(0.35 + stormLevel * 0.55), 110);
     }

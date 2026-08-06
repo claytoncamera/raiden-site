@@ -148,11 +148,16 @@
   });
 
   /* ---------- CDJ waveform screens ---------- */
+  let waveAccent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
   const waves = {};
   document.querySelectorAll(".cdj-wave").forEach((c) => {
     waves[c.dataset.deck] = c;
     drawWave(c, 0, false);
   });
+  new MutationObserver(() => {
+    waveAccent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+    for (const deck of ["a", "b"]) drawWave(waves[deck], 0, RaidenAudio.ready && RaidenAudio.isPlaying(deck));
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-light"] });
 
   // seeded pseudo-waveform so each deck has a consistent "track"
   function waveHeights(deck) {
@@ -176,8 +181,7 @@
     const W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
     const heights = waveHeights(canvas.dataset.deck);
-    const styles = getComputedStyle(document.documentElement);
-    const accent = styles.getPropertyValue("--accent").trim();
+    const accent = waveAccent;
     const bars = 60;
     const bw = W / bars;
     const offset = Math.floor(phase * heights.length);

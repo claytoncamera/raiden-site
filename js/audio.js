@@ -207,8 +207,14 @@ window.RaidenAudio = (() => {
   }
 
   /* ---------------- scheduler ---------------- */
+  // background tabs throttle timers to ~1s — widen the lookahead there so audio never gaps
+  let scheduleAhead = SCHEDULE_AHEAD;
+  document.addEventListener("visibilitychange", () => {
+    scheduleAhead = document.hidden ? 1.6 : SCHEDULE_AHEAD;
+  });
+
   function scheduler() {
-    while (nextStepTime < ctx.currentTime + SCHEDULE_AHEAD) {
+    while (nextStepTime < ctx.currentTime + scheduleAhead) {
       scheduleStep(currentStep, nextStepTime);
       nextStepTime += SECONDS_PER_STEP;
       currentStep++;
@@ -460,12 +466,13 @@ window.RaidenAudio = (() => {
         deck.pendingStart = false;
         emit("deckstate", { deck: id, playing: false });
       } else {
-        const anyPlaying = decks.a.playing || decks.b.playing;
-        if (!anyPlaying) {
-          // nothing running — start clean on the next scheduler pass
-          deck.pendingStart = true;
-        } else {
-          deck.pendingStart = true; // quantized to next bar, beatmatched
+        const anyRunning = decks.a.playing || decks.b.playing || decks.a.pendingStart || decks.b.pendingStart;
+        deck.pendingStart = true; // quantized to the next bar → always beatmatched
+        if (!anyRunning) {
+          // nothing else is running — restart the transport so sound is immediate,
+          // instead of waiting up to a bar for the old grid to come around
+          currentStep = 0;
+          nextStepTime = ctx.currentTime + 0.03;
         }
       }
       return deck.playing || deck.pendingStart;
@@ -524,7 +531,7 @@ window.RaidenAudio = (() => {
       lp.frequency.exponentialRampToValueAtTime(55, t + dur);
 
       const g = ctx.createGain();
-      const peak = 0.4 * Math.min(1, intensity);
+      const peak = 0.3 * Math.min(1, intensity);
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(peak, t + 0.05);
       g.gain.exponentialRampToValueAtTime(peak * 0.35, t + 0.5);
