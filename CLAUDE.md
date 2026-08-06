@@ -103,11 +103,18 @@ never fake data. These are the actual gaps, each marked `EDITME` in source:
 
 ## Deploy
 
-This is **GitHub Pages**, building from the `main` branch root. A `CNAME` file in the repo root
-points it at raiden.biz. **Pushing to `main` deploys automatically** — there is no separate build
-or release step. Pages usually goes live within about a minute of a push (occasionally GitHub's
-build queue itself gets stuck and needs a retry — if a push isn't showing up live after a few
-minutes, that's a GitHub-side hiccup, not a problem with the code; just push again or wait it out).
+This is **GitHub Pages**, deployed via a **GitHub Actions workflow**
+(`.github/workflows/deploy-pages.yml`) rather than the older branch-build system — that's a
+deliberate choice, not an accident. A `CNAME` file in the repo root points it at raiden.biz.
+**Pushing to `main` deploys automatically**, usually live within a minute or two.
+
+If a deploy ever seems stuck, check the **Actions tab** on GitHub
+(`github.com/claytoncamera/raiden-site/actions`) rather than Settings → Pages — that's where the
+real status and logs are now. If a run is sitting queued for an unusually long time (more than a
+few minutes with zero progress), cancel it and re-run — that alone has resolved every stall seen
+so far. **Don't chase the `repos/.../pages` API status field or curl the live site to judge deploy
+health** — both have been observed lagging or reporting stale state; the Actions run's own
+status/logs are the source of truth.
 
 **Contributing changes back:** the repo is currently owned by Clayton (`claytoncamera/raiden-site`,
 public). If you don't have direct push access to `main`, the normal flow is: fork it, make changes
