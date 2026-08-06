@@ -9,9 +9,13 @@
   <meta property="og:description" content="House music, struck by lightning. Step into the booth." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://raiden.biz/" />
+  <meta property="og:image" content="https://raiden.biz/assets/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://raiden.biz/assets/og.png" />
   <link rel="canonical" href="https://raiden.biz/" />
   <meta name="theme-color" content="#07070b" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -28,6 +32,12 @@
   </script>
 </head>
 <body>
+
+  <!-- Preloader (one flash per session) -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="54" height="54"><path d="M13 2 L4 14 h6 L9 22 L20 9 h-7 z" fill="currentColor"/></svg>
+  </div>
+  <script>try{if(sessionStorage.getItem("raiden-seen"))document.getElementById("preloader").style.display="none"}catch(e){}</script>
 
   <!-- Scroll progress -->
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -51,6 +61,7 @@
     <div class="nav-links" id="navLinks">
       <a href="#booth">Booth</a>
       <a href="#mixes">Mixes</a>
+      <a href="#visuals">Visuals</a>
       <a href="#dates">Dates</a>
       <a href="#merch">Merch</a>
       <a href="#about">About</a>
@@ -102,6 +113,7 @@
 
   <!-- ============ THE BOOTH ============ -->
   <section class="section" id="booth">
+    <span class="section-tag" aria-hidden="true">/ LIVE RIG</span>
     <div class="section-head reveal">
       <span class="section-num">01</span>
       <h2>The Booth</h2>
@@ -217,6 +229,7 @@
 
   <!-- ============ MIXES ============ -->
   <section class="section" id="mixes">
+    <span class="section-tag" aria-hidden="true">/ ARCHIVE</span>
     <div class="section-head reveal">
       <span class="section-num">02</span>
       <h2>Mixes</h2>
@@ -260,10 +273,29 @@
     </div>
   </section>
 
-  <!-- ============ DATES ============ -->
-  <section class="section" id="dates">
+  <!-- ============ VISUALS ============ -->
+  <section class="section" id="visuals">
+    <span class="section-tag" aria-hidden="true">/ GENERATIVE</span>
     <div class="section-head reveal">
       <span class="section-num">03</span>
+      <h2>Visuals</h2>
+      <p>Generated live by this site's storm engine — no two visits look the same. Click any piece to re-roll it.</p>
+    </div>
+    <div class="art-grid" id="artGrid">
+      <figure class="art-tile reveal" data-art="strike"><canvas width="480" height="360"></canvas><figcaption>[ 001 ] STRIKE STUDY</figcaption></figure>
+      <figure class="art-tile reveal" data-art="clouds"><canvas width="480" height="360"></canvas><figcaption>[ 002 ] CLOUD FIELD</figcaption></figure>
+      <figure class="art-tile reveal" data-art="crowd"><canvas width="480" height="360"></canvas><figcaption>[ 003 ] CROWD AT 126</figcaption></figure>
+      <figure class="art-tile reveal" data-art="wave"><canvas width="480" height="360"></canvas><figcaption>[ 004 ] WAVEFORM</figcaption></figure>
+      <figure class="art-tile reveal" data-art="signal"><canvas width="480" height="360"></canvas><figcaption>[ 005 ] SIGNAL</figcaption></figure>
+      <figure class="art-tile reveal" data-art="grid"><canvas width="480" height="360"></canvas><figcaption>[ 006 ] GRID STORM</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- ============ DATES ============ -->
+  <section class="section" id="dates">
+    <span class="section-tag" aria-hidden="true">/ ROUTING</span>
+    <div class="section-head reveal">
+      <span class="section-num">04</span>
       <h2>Dates</h2>
       <p>The storm calendar.</p>
     </div>
@@ -286,8 +318,9 @@
 
   <!-- ============ MERCH ============ -->
   <section class="section" id="merch">
+    <span class="section-tag" aria-hidden="true">/ DROP 001</span>
     <div class="section-head reveal">
-      <span class="section-num">04</span>
+      <span class="section-num">05</span>
       <h2>Merch</h2>
       <p>Stormwear. First drop is in the lab — cut, printed, and struck by the same bolt as everything else here.</p>
     </div>
@@ -297,13 +330,16 @@
         <div class="merch-art merch-art-1">
           <svg viewBox="0 0 100 100" aria-hidden="true">
             <path class="garment" d="M35 16 L20 27 L27 41 L34 36 L34 86 L66 86 L66 36 L73 41 L80 27 L65 16 C61 22 39 22 35 16 Z" />
-            <path class="garment" d="M35 16 C39 22 61 22 65 16" />
-            <path class="mark" d="M52 38 L44 50 h5 L46 60 L56 47 h-6 z" />
+            <path class="seam" d="M37 18 C41 24 59 24 63 18" />
+            <path class="seam" d="M34 81 L66 81" />
+            <path class="seam" d="M27 40 L33 36 M73 40 L67 36" />
+            <path class="mark" d="M52 34 L43 48 h6 L47 60 L58 45 h-7 z" />
+            <text class="ptxt" x="50" y="71" text-anchor="middle">RAIDEN</text>
           </svg>
         </div>
         <div class="merch-body">
           <h3>BOLT TEE</h3>
-          <p>Void black · storm print</p>
+          <p>Void black · 240gsm · storm print</p>
           <span class="merch-drop">DROP 001</span>
         </div>
       </article>
@@ -311,25 +347,29 @@
         <div class="merch-art merch-art-2">
           <svg viewBox="0 0 100 100" aria-hidden="true">
             <path class="garment" d="M36 20 L21 30 L28 44 L34 39 L34 88 L66 88 L66 39 L72 44 L79 30 L64 20 C63 13 37 13 36 20 Z" />
-            <path class="garment" d="M36 20 C40 28 60 28 64 20" />
-            <path class="garment" d="M41 66 L59 66 L62 80 L38 80 Z" />
-            <path class="garment" d="M46 28 L46 38 M54 28 L54 38" />
-            <path class="mark" d="M52 44 L44 56 h5 L46 66 L56 53 h-6 z" />
+            <path class="seam" d="M38 21 C42 29 58 29 62 21" />
+            <path class="seam" d="M46 30 L45 41 M54 30 L55 41" />
+            <circle class="seam" cx="45" cy="42" r="0.9" />
+            <circle class="seam" cx="55" cy="42" r="0.9" />
+            <path class="seam" d="M40 68 L60 68 L63 82 L37 82 Z" />
+            <path class="seam" d="M34 84 L66 84" />
+            <text class="ptxt kanji" x="50" y="58" text-anchor="middle">雷電</text>
           </svg>
         </div>
         <div class="merch-body">
           <h3>雷電 HOODIE</h3>
-          <p>Heavyweight · kanji back print</p>
+          <p>Heavyweight fleece · kanji back print</p>
           <span class="merch-drop">DROP 001</span>
         </div>
       </article>
       <article class="merch-card reveal">
         <div class="merch-art merch-art-3">
           <svg viewBox="0 0 100 100" aria-hidden="true">
-            <path class="garment" d="M30 56 C30 34 70 34 70 56" />
-            <path class="garment" d="M30 56 L70 56 C79 56 84 60 83 64 C70 60 40 60 22 66 C21 61 24 56 30 56 Z" />
-            <path class="garment" d="M50 34 L50 30" />
-            <path class="mark" d="M52 40 L46 49 h4 L48 56 L56 46 h-5 z" />
+            <path class="garment" d="M28 57 C28 34 72 34 72 57 Z" />
+            <path class="seam" d="M50 35 L50 57 M38 38 L35 57 M62 38 L65 57" />
+            <circle class="seam" cx="50" cy="34" r="1.6" />
+            <path class="garment" d="M26 57 L74 57 C82 57 85 61 83 66 C66 60 40 61 21 68 C18 62 21 57 26 57 Z" />
+            <path class="mark" d="M45 41 L40 49 h4 L42 56 L49 46 h-4 z" />
           </svg>
         </div>
         <div class="merch-body">
@@ -342,9 +382,12 @@
         <div class="merch-art merch-art-4">
           <svg viewBox="0 0 100 100" aria-hidden="true">
             <circle class="garment" cx="50" cy="50" r="34" />
-            <circle class="garment" cx="50" cy="50" r="5" />
-            <circle class="garment" cx="50" cy="50" r="22" opacity="0.4" />
-            <path class="mark" d="M54 30 L42 48 h6 L44 70 L60 44 h-8 z" opacity="0.9" />
+            <circle class="seam" cx="50" cy="50" r="29" />
+            <circle class="seam" cx="50" cy="50" r="24" />
+            <circle class="seam" cx="50" cy="50" r="19" />
+            <circle class="garment" cx="50" cy="50" r="7" />
+            <circle class="mark" cx="50" cy="50" r="1.8" />
+            <path class="mark" d="M55 26 L42 47 h7 L45 74 L62 45 h-9 z" opacity="0.92" />
           </svg>
         </div>
         <div class="merch-body">
@@ -365,8 +408,9 @@
 
   <!-- ============ ABOUT ============ -->
   <section class="section" id="about">
+    <span class="section-tag" aria-hidden="true">/ STORY</span>
     <div class="section-head reveal">
-      <span class="section-num">05</span>
+      <span class="section-num">06</span>
       <h2>About</h2>
     </div>
     <div class="about-grid">
@@ -398,8 +442,9 @@
 
   <!-- ============ PRESS / EPK ============ -->
   <section class="section" id="press">
+    <span class="section-tag" aria-hidden="true">/ ASSETS</span>
     <div class="section-head reveal">
-      <span class="section-num">06</span>
+      <span class="section-num">07</span>
       <h2>Press Kit</h2>
       <p>Everything a promoter needs, one click away.</p>
     </div>
@@ -417,11 +462,13 @@
 
   <!-- ============ BOOKING ============ -->
   <section class="section section-book" id="book">
+    <span class="section-tag" aria-hidden="true">/ CONTACT</span>
     <div class="section-head reveal">
-      <span class="section-num">07</span>
+      <span class="section-num">08</span>
       <h2>Book Raiden</h2>
       <p>Clubs, festivals, warehouses, boats — if it has power, it can have thunder.</p>
     </div>
+    <div class="book-grid">
     <form class="book-form reveal" id="bookForm">
       <div class="form-row">
         <label>Your name<input type="text" name="name" required autocomplete="name" /></label>
@@ -438,6 +485,20 @@
       </button>
       <p class="form-note" id="formNote"></p>
     </form>
+    <aside class="book-info reveal">
+      <h3>The practical bits</h3>
+      <!-- EDITME: tune these to taste — they're the standard promoter answers -->
+      <ul>
+        <li><span>Sets</span>60 min → all night</li>
+        <li><span>Rooms</span>Club · festival · afters</li>
+        <li><span>Range</span>Deep → peak house, 122–128</li>
+        <li><span>Rig</span>DJM-V10 preferred · any pro 4-ch works · 2× CDJ</li>
+        <li><span>Booth</span>One good monitor, please</li>
+        <li><span>Reply</span>Within 48 hours</li>
+      </ul>
+      <p class="book-info-note">Press photos, logos, and the full tech rider ship with the EPK on request.</p>
+    </aside>
+    </div>
   </section>
 
   <!-- ============ FOOTER ============ -->
@@ -460,6 +521,7 @@
       <nav class="footer-links" aria-label="Site sections">
         <a href="#booth">Booth</a>
         <a href="#mixes">Mixes</a>
+        <a href="#visuals">Visuals</a>
         <a href="#dates">Dates</a>
         <a href="#merch">Merch</a>
         <a href="#about">About</a>
@@ -480,6 +542,7 @@
   <script src="js/booth.js"></script>
   <script src="js/scene.js"></script>
   <script src="js/chat.js"></script>
+  <script src="js/artworks.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

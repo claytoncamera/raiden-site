@@ -16,6 +16,15 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---------- preloader: one bolt flash per session ---------- */
+  const preloader = document.getElementById("preloader");
+  if (preloader && preloader.style.display !== "none") {
+    setTimeout(() => {
+      preloader.classList.add("done");
+      try { sessionStorage.setItem("raiden-seen", "1"); } catch (_) {}
+    }, reduceMotion ? 0 : 750);
+  }
+
   // ?static=1 — deterministic no-animation render (screenshots, SEO audits, perf tests)
   if (new URLSearchParams(location.search).has("static")) {
     document.documentElement.classList.add("static-mode");

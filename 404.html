@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" data-light="storm">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — RAIDEN</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .lost {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 1.2rem;
+      padding: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+    .lost svg { color: var(--accent); filter: drop-shadow(0 0 24px var(--glow)); }
+    .lost .code {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+    }
+    .lost h1 {
+      font-size: clamp(2rem, 8vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .lost p { color: var(--text-dim); max-width: 420px; }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <main class="lost">
+    <svg viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M13 2 L4 14 h6 L9 22 L20 9 h-7 z" fill="currentColor"/></svg>
+    <span class="code">[ 404 ]</span>
+    <h1>Wrong turn<br />in the storm</h1>
+    <p>This page got struck and never made it. The music is back at the booth.</p>
+    <a class="btn btn-accent" href="/">Back to the storm</a>
+  </main>
+</body>
+</html>

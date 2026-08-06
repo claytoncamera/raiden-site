@@ -67,6 +67,33 @@ a { color: inherit; text-decoration: none; }
 
 button { font-family: inherit; cursor: pointer; }
 
+/* ---------- scrollbar ---------- */
+html { scrollbar-color: #2a2a3a #0a0a10; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #0a0a10; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent), #1c1c28);
+  border-radius: 5px;
+  border: 2px solid #0a0a10;
+}
+
+/* ---------- preloader ---------- */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+.preloader svg { animation: preFlicker 0.9s steps(3) infinite; filter: drop-shadow(0 0 22px var(--glow)); }
+@keyframes preFlicker { 0%, 100% { opacity: 1; } 45% { opacity: 0.25; } 70% { opacity: 0.8; } }
+.preloader.done { opacity: 0; visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { .preloader { display: none; } }
+
 /* ---------- ambient layers ---------- */
 .spotlight {
   position: fixed;
@@ -484,6 +511,17 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   letter-spacing: 0.03em;
 }
 .section-head p { color: var(--text-dim); font-size: 1.02rem; }
+
+.section-tag {
+  position: absolute;
+  top: clamp(4.5rem, 9vw, 7.5rem);
+  right: clamp(1.1rem, 4vw, 2.5rem);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  color: var(--text-dim);
+  opacity: 0.55;
+}
 
 /* reveal on scroll */
 .reveal {
@@ -1132,6 +1170,52 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 .newsletter input:focus { outline: none; border-color: var(--accent); }
 
 /* ============================================================
+   VISUALS — generative gallery
+   ============================================================ */
+.art-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.1rem;
+}
+.art-tile {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--panel);
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.art-tile:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 18px 46px -22px var(--glow);
+}
+.art-tile canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+.art-tile figcaption {
+  padding: 0.65rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--text-dim);
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+}
+.art-tile figcaption::after {
+  content: "↻";
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: var(--accent);
+}
+.art-tile:hover figcaption::after { opacity: 1; }
+
+/* ============================================================
    MERCH
    ============================================================ */
 .merch-grid {
@@ -1158,27 +1242,77 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   justify-content: center;
   position: relative;
   background:
-    radial-gradient(circle at 50% 40%, var(--accent-soft), transparent 65%),
+    radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1.4px),
+    radial-gradient(circle at 50% 38%, var(--accent-soft), transparent 62%),
     #08080f;
+  background-size: 15px 15px, auto, auto;
   border-bottom: 1px solid var(--line);
+  overflow: hidden;
 }
+/* floor shadow under the product */
+.merch-art::after {
+  content: "";
+  position: absolute;
+  left: 22%; right: 22%;
+  bottom: 9%;
+  height: 8%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.7), transparent 70%);
+}
+/* lighthouse beam sweep on hover (matches mix cards) */
+.merch-art::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  z-index: 2;
+  background: conic-gradient(from 0deg, transparent 0 8%, rgba(255, 255, 255, 0.1) 10%, transparent 13% 100%);
+  animation: beamSweep 3.2s linear infinite;
+  animation-play-state: paused;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.merch-card:hover .merch-art::before { animation-play-state: running; opacity: 1; }
 .merch-art svg {
-  width: 72%;
-  height: 72%;
+  width: 74%;
+  height: 74%;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1.1);
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
 }
+.merch-card:hover .merch-art svg { transform: translateY(-5px) rotate(-1.5deg); }
 .merch-art .garment {
-  fill: none;
+  fill: #10101a;
   stroke: var(--text);
-  stroke-width: 2;
+  stroke-width: 1.7;
   stroke-linejoin: round;
   stroke-linecap: round;
-  opacity: 0.85;
+  opacity: 0.92;
+}
+.merch-art .seam {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.32;
 }
 .merch-art .mark {
   fill: var(--accent);
+  stroke: none;
   transition: fill 0.4s ease;
   filter: drop-shadow(0 0 6px var(--glow));
 }
+.merch-art .ptxt {
+  font-family: var(--font-display);
+  font-size: 5.4px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  fill: var(--text);
+  opacity: 0.8;
+}
+.merch-art .ptxt.kanji { font-size: 12px; letter-spacing: 0.08em; fill: var(--accent); opacity: 0.95; }
 .merch-card:hover .mark { animation: markFlicker 0.6s steps(2) 2; }
 @keyframes markFlicker { 50% { opacity: 0.25; } }
 .merch-body { padding: 1rem 1.1rem 1.2rem; }
@@ -1349,7 +1483,52 @@ body.spotlight-on .spotlight { opacity: 0.9; }
    BOOKING
    ============================================================ */
 .section-book {
-  max-width: 860px;
+  max-width: 1080px;
+}
+.book-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.3rem;
+  align-items: start;
+}
+.book-info {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.3rem 1.4rem;
+}
+.book-info h3 {
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 0.9rem;
+  transition: color 0.4s ease;
+}
+.book-info ul { list-style: none; }
+.book-info li {
+  display: flex;
+  gap: 0.9rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.book-info li:last-child { border-bottom: none; }
+.book-info li span {
+  flex: none;
+  width: 62px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-top: 0.2em;
+}
+.book-info-note {
+  margin-top: 0.9rem;
+  color: var(--text-dim);
+  font-size: 0.8rem;
 }
 .book-form {
   background: var(--panel);
@@ -1549,6 +1728,8 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   .chat { border-left: none; border-top: 1px solid var(--line); }
   .chat-log { max-height: 190px; }
   .stream-title { display: none; }
+  .book-grid { grid-template-columns: 1fr; }
+  .section-tag { display: none; }
 }
 
 @media (max-width: 760px) {
@@ -1611,4 +1792,6 @@ html.static-mode { scroll-behavior: auto; }
   .merch-card:hover .mark { animation: none; }
   .hero-nowplaying i { animation: none; }
   .back-top { transition: none; }
+  .merch-art::before { animation: none; opacity: 0; }
+  .merch-card:hover .merch-art svg { transform: none; }
 }
