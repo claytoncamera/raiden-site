@@ -119,6 +119,18 @@ HTTPS is live (`https://raiden.biz` serves a valid cert). The `www` subdomain re
 apex. `robots.txt` / `sitemap.xml` / OG share image (`assets/og.png`) / apple-touch-icon are all
 already wired for a real domain — nothing to configure there.
 
+## A tooling note, so you don't get stuck
+
+The merch product photos (`assets/merch/*.jpg`) and the OG share image (`assets/og.png`) were made
+with an AI image-generation tool connected to the session that built this site — not anything
+baked into the repo. The images themselves are just static JPEGs/PNGs now; they'll display fine
+for anyone, no special access needed. But if you want to **generate new ones** (extend the merch
+line, redo a photo, make new art), that depends on whatever image-generation tooling is available
+in *your* Claude session — it may or may not be the same one. If you don't have an equivalent tool
+connected, that's not a bug in this repo; it just means image generation isn't available to you
+here, the same way it wouldn't be for any other AI coding session without that integration.
+Everything else — HTML, CSS, JS, the whole interactive site — has zero such dependency.
+
 ## Out of scope for this repo — check with Clayton first
 
 - **DNS / domain registrar** — raiden.biz is registered on GoDaddy under Clayton's account. Don't
