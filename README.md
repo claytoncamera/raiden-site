@@ -28,6 +28,8 @@ Any static host works (GitHub Pages, Vercel, Railway static, Hostinger).
 | **Storm system** | `js/visualizer.js` (rewrite) | Fractal lightning: stepped-leader preview → double-flash strike → ember afterglow, recursive branches, impact ripples. Storm clouds (pre-rendered sprites), sheet lightning, angled rain — rain intensifies while the ION RAIN deck plays. A storm-level meter (driven by the low band) escalates everything as the set heats up. Click empty sky to summon a bolt (`RaidenStrike(x, y)` is public). ~28% of strikes aim at the title, which jolts. |
 | **Thunder** | `js/audio.js` | Synthesized rumble (looped noise → sweeping lowpass → swell envelope) under strikes, deliberately bypassing the DJ filter. Only fires after audio is gesture-unlocked; cooldown 3.2s. |
 | **Title & type extras** | `css/style.css`, `js/main.js` | Beat-reactive title glow, neon flicker on the E, 雷/電 kanji watermarks, hero parallax + fade on scroll, giant outlined footer wordmark, lighthouse-beam sweep on mix-card hover. |
+| **Merch — DROP 001** | `index.html`, `css/style.css` | Stormwear section: monoline SVG garments (bolt tee, 雷電 hoodie, storm cap, slipmats) with theme-reactive glowing marks, charge-sweep drop chips, honest "in the lab" status + notify list. EDITME: link cards to the real store when it exists. |
+| **Site flow** | `js/main.js` | Scroll-spy nav (active section highlighted), storm-gradient scroll progress bar, back-to-top bolt, hero "now playing" chip (appears when the booth runs, links to it), staggered hero entrance, kanji scroll drift, footer quick links, about→booking cross-link. |
 
 ## Placeholders to fill (all marked `EDITME` in source)
 
