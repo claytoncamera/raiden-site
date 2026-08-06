@@ -1,5 +1,8 @@
 # CLAUDE.md — RAIDEN site (agent-facing project brief)
 
+<!-- last touched: 2026-08-06 -->
+
+
 > This file is for whichever Claude Code session opens this repo next — most likely **Raiden's**.
 > If you're a human reading this: it's written to brief an AI coding agent with zero prior context
 > on what this project is, what already exists, what's still needed, and what the rules are. Read
