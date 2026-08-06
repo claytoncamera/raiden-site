@@ -21,6 +21,10 @@ Any static host works (GitHub Pages, Vercel, Railway static, Hostinger).
 | **Lighting desk** | `css/style.css`, `js/main.js` | 4 club lighting presets (Violet Storm / Ember / Acid / Ice) swap the whole site palette via `html[data-light]` CSS vars; persisted in localStorage. |
 | **Sections** | `index.html` | Hero → Booth → Mixes → Dates → About → Press Kit → Booking → Footer. Modeled on what works across top DJ sites (bold hero, one signature interactive element, clear booking CTA). |
 | Cursor spotlight, beat-synced glow, ticker, scroll reveals | `js/main.js` | All honor `prefers-reduced-motion`. No strobe anywhere by design (photosensitivity). |
+| **Boiler-room stream frame** | `index.html`, `css/style.css`, `js/main.js` | The booth sits inside a live-stream chrome: ● REC/LIVE pill + elapsed clock, drifting viewer count, scanlines + camera vignette, subtle handheld tilt on pointer. |
+| **Crowd chat (sim)** | `js/chat.js` | Labeled "chat sim". Reacts to real booth actions via `raiden:action` events (cut the kick → "kick GONE 😭", filter sweep → "sweep it loooow") + ambient chatter while playing. |
+| **Stage scene** | `js/scene.js` | Moving-head light beams + floor haze behind the rig (colored by the active lighting preset), crowd silhouettes in front — heads bob to the low end, arms and glowing phones go up on sustained energy. Sleeps when off-screen. |
+| **Hero crowd + film grain** | `js/visualizer.js`, `css/style.css` | Silhouette skyline along the hero bottom (audio-reactive), sitewide animated film grain, chromatic aberration on the title, mono/stencil label typography (`[ 01 ]`), outlined ticker words, nav VU meter while live. |
 
 ## Placeholders to fill (all marked `EDITME` in source)
 
