@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-light="storm">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAIDEN — House DJ | Official Site</title>
+  <meta name="description" content="RAIDEN — house music, struck by lightning. Mixes, dates, and bookings. Pioneer DJM-V10 + CDJs. Step into the booth." />
+  <meta property="og:title" content="RAIDEN — House DJ" />
+  <meta property="og:description" content="House music, struck by lightning. Step into the booth." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#07070b" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": "Raiden",
+    "genre": "House",
+    "description": "House DJ. Pioneer DJM-V10, two CDJs, and a storm of a sound."
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Cursor spotlight (desktop only) -->
+  <div class="spotlight" id="spotlight" aria-hidden="true"></div>
+  <!-- Beat-synced ambient glow -->
+  <div class="beat-veil" id="beatVeil" aria-hidden="true"></div>
+
+  <!-- ============ NAV ============ -->
+  <nav class="nav" id="nav">
+    <a class="nav-logo" href="#top" aria-label="Raiden — home">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M13 2 L4 14 h6 L9 22 L20 9 h-7 z" fill="currentColor"/></svg>
+      <span>RAIDEN</span>
+    </a>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="#booth">Booth</a>
+      <a href="#mixes">Mixes</a>
+      <a href="#dates">Dates</a>
+      <a href="#about">About</a>
+      <a href="#press">Press</a>
+      <div class="light-desk" role="group" aria-label="Lighting presets">
+        <span class="light-desk-label">LIGHTS</span>
+        <button class="light-dot" data-light="storm" title="Violet Storm" aria-label="Violet Storm lighting"></button>
+        <button class="light-dot" data-light="ember" title="Ember" aria-label="Ember lighting"></button>
+        <button class="light-dot" data-light="acid" title="Acid" aria-label="Acid lighting"></button>
+        <button class="light-dot" data-light="ice" title="Ice" aria-label="Ice lighting"></button>
+      </div>
+      <a href="#book" class="btn btn-accent btn-small nav-book">Book Raiden</a>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="top">
+    <canvas id="heroCanvas" aria-hidden="true"></canvas>
+    <div class="hero-inner">
+      <p class="hero-kicker">HOUSE&nbsp;&nbsp;·&nbsp;&nbsp;ライデン&nbsp;&nbsp;·&nbsp;&nbsp;126 BPM</p>
+      <h1 class="hero-title" aria-label="Raiden">
+        <span data-char>R</span><span data-char>A</span><span data-char>I</span><span data-char>D</span><span data-char>E</span><span data-char>N</span>
+      </h1>
+      <p class="hero-tagline">House music, struck by lightning.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-accent" id="dropBeatBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          Drop the beat
+        </button>
+        <a class="btn btn-ghost" href="#book">Book Raiden</a>
+      </div>
+    </div>
+    <a class="hero-scroll" href="#booth" aria-label="Scroll to the booth">
+      <span class="hero-scroll-line"></span>
+    </a>
+  </header>
+
+  <!-- ============ TICKER ============ -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>RAIDEN ⚡ HOUSE ⚡ 雷電 ⚡ TECH HOUSE ⚡ DEEP ⚡ 126 BPM ⚡ DJM-V10 ⚡ TWO DECKS ⚡ NO REQUESTS ⚡ </span>
+      <span>RAIDEN ⚡ HOUSE ⚡ 雷電 ⚡ TECH HOUSE ⚡ DEEP ⚡ 126 BPM ⚡ DJM-V10 ⚡ TWO DECKS ⚡ NO REQUESTS ⚡ </span>
+    </div>
+  </div>
+
+  <!-- ============ THE BOOTH ============ -->
+  <section class="section" id="booth">
+    <div class="section-head reveal">
+      <span class="section-num">01</span>
+      <h2>The Booth</h2>
+      <p>This is the rig — a DJM-V10 between two decks. It's real: press play, ride the faders, sweep the filter. Two grooves, one storm. Mix them.</p>
+    </div>
+
+    <div class="booth reveal" id="boothRig">
+      <!-- ======= DECK A ======= -->
+      <div class="cdj" data-deck="a">
+        <div class="cdj-screen">
+          <div class="cdj-track-title">VOLTAGE</div>
+          <div class="cdj-track-artist">RAIDEN</div>
+          <canvas class="cdj-wave" data-deck="a" width="240" height="30" aria-hidden="true"></canvas>
+          <div class="cdj-meta">
+            <span class="cdj-time" data-deck="a">00:00</span>
+            <span class="cdj-bpm">126.0</span>
+            <span class="cdj-key">Am</span>
+          </div>
+        </div>
+        <div class="platter" data-deck="a">
+          <div class="platter-ring"></div>
+          <div class="platter-disc">
+            <div class="platter-grooves"></div>
+            <div class="platter-label"><span>雷</span></div>
+          </div>
+        </div>
+        <div class="cdj-controls">
+          <button class="cdj-btn cue" data-action="cue" data-deck="a">CUE</button>
+          <button class="cdj-btn play" data-action="play" data-deck="a" aria-label="Play deck A">
+            <svg class="ic-play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <svg class="ic-pause" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/></svg>
+          </button>
+        </div>
+        <div class="cdj-model">CDJ · DECK A</div>
+      </div>
+
+      <!-- ======= MIXER ======= -->
+      <div class="mixer">
+        <div class="mixer-brand"><span>DJM-V10</span><span class="mixer-brand-sub">6CH PRO MIXER</span></div>
+        <div class="mixer-strips" id="mixerStrips">
+          <!-- strips injected by booth.js: KICK / HATS / PERC / BASS / CHORDS / LEAD -->
+        </div>
+        <div class="mixer-master">
+          <div class="knob-wrap">
+            <div class="knob" id="filterKnob" tabindex="0" role="slider" aria-label="Master filter" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0">
+              <div class="knob-indicator"></div>
+            </div>
+            <span class="knob-label">FILTER</span>
+            <span class="knob-sub"><i>LPF</i><i>HPF</i></span>
+          </div>
+          <div class="master-readout">
+            <span class="master-bpm" id="masterBpm">126.0</span>
+            <span class="master-bpm-label">BPM · SYNCED</span>
+          </div>
+        </div>
+        <div class="mixer-xfade">
+          <span>A</span>
+          <input type="range" class="crossfader" id="crossfader" min="0" max="100" value="50" aria-label="Crossfader between deck A and deck B" />
+          <span>B</span>
+        </div>
+      </div>
+
+      <!-- ======= DECK B ======= -->
+      <div class="cdj" data-deck="b">
+        <div class="cdj-screen">
+          <div class="cdj-track-title">ION RAIN</div>
+          <div class="cdj-track-artist">RAIDEN</div>
+          <canvas class="cdj-wave" data-deck="b" width="240" height="30" aria-hidden="true"></canvas>
+          <div class="cdj-meta">
+            <span class="cdj-time" data-deck="b">00:00</span>
+            <span class="cdj-bpm">126.0</span>
+            <span class="cdj-key">Am</span>
+          </div>
+        </div>
+        <div class="platter" data-deck="b">
+          <div class="platter-ring"></div>
+          <div class="platter-disc">
+            <div class="platter-grooves"></div>
+            <div class="platter-label"><span>電</span></div>
+          </div>
+        </div>
+        <div class="cdj-controls">
+          <button class="cdj-btn cue" data-action="cue" data-deck="b">CUE</button>
+          <button class="cdj-btn play" data-action="play" data-deck="b" aria-label="Play deck B">
+            <svg class="ic-play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <svg class="ic-pause" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/></svg>
+          </button>
+        </div>
+        <div class="cdj-model">CDJ · DECK B</div>
+      </div>
+    </div>
+
+    <p class="booth-hint reveal">Headphones recommended. Start Deck A, bring in Deck B on the crossfader, cut the kick, sweep the filter — you're mixing.</p>
+  </section>
+
+  <!-- ============ MIXES ============ -->
+  <section class="section" id="mixes">
+    <div class="section-head reveal">
+      <span class="section-num">02</span>
+      <h2>Mixes</h2>
+      <p>Full-length sets land here. Until upload day, the booth above is the demo.</p>
+    </div>
+    <div class="mix-grid">
+      <!-- EDITME: replace each card's link with the real SoundCloud/Mixcloud URL,
+           or swap the whole card for an embed:
+           <iframe src="https://w.soundcloud.com/player/?url=TRACK_URL&color=%238b5cf6" ...></iframe> -->
+      <article class="mix-card reveal">
+        <div class="mix-art mix-art-1"><span class="mix-art-bolt">⚡</span></div>
+        <div class="mix-card-body">
+          <h3>STORMFRONT 001</h3>
+          <p class="mix-meta">Deep · Tech House — 60 min</p>
+          <span class="mix-status">Dropping soon</span>
+        </div>
+      </article>
+      <article class="mix-card reveal">
+        <div class="mix-art mix-art-2"><span class="mix-art-bolt">⚡</span></div>
+        <div class="mix-card-body">
+          <h3>AFTER THE THUNDER</h3>
+          <p class="mix-meta">Deep House · Sunrise set — 90 min</p>
+          <span class="mix-status">Dropping soon</span>
+        </div>
+      </article>
+      <article class="mix-card reveal">
+        <div class="mix-art mix-art-3"><span class="mix-art-bolt">⚡</span></div>
+        <div class="mix-card-body">
+          <h3>HIGH VOLTAGE</h3>
+          <p class="mix-meta">Peak Time · Club set — 75 min</p>
+          <span class="mix-status">Dropping soon</span>
+        </div>
+      </article>
+    </div>
+    <div class="mix-follow reveal">
+      <p>Be first when they drop:</p>
+      <form class="newsletter" id="newsletterForm">
+        <input type="email" placeholder="your@email.com" aria-label="Email address" required />
+        <button type="submit" class="btn btn-accent btn-small">Notify me</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ DATES ============ -->
+  <section class="section" id="dates">
+    <div class="section-head reveal">
+      <span class="section-num">03</span>
+      <h2>Dates</h2>
+      <p>The storm calendar.</p>
+    </div>
+    <div class="dates-board reveal">
+      <!-- EDITME: real gigs go here as rows, e.g.
+      <div class="date-row">
+        <span class="date-when">SEP 12</span>
+        <span class="date-venue">Venue Name</span>
+        <span class="date-city">Orlando, FL</span>
+        <a class="btn btn-ghost btn-small" href="TICKET_URL">Tickets</a>
+      </div> -->
+      <div class="date-row date-row-open">
+        <span class="date-when">NEXT</span>
+        <span class="date-venue">Booking fall dates now</span>
+        <span class="date-city">Your city?</span>
+        <a class="btn btn-accent btn-small" href="#book">Make it happen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="section" id="about">
+    <div class="section-head reveal">
+      <span class="section-num">04</span>
+      <h2>About</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        <!-- EDITME: tune the bio — keep it honest, no invented accolades -->
+        <p class="about-lead">Raiden — 雷電, "thunder and lightning." The name is the sound: rolling low-end you feel in your chest, hats that crackle like static, and drops that land like a strike.</p>
+        <p>Raiden plays house — deep and hypnotic early, tech and peak-time late. Long blends, patient builds, no gimmicks. The kind of set where you look up and two hours are gone.</p>
+        <p>Behind the decks it's a Pioneer DJM-V10 and two CDJs — six channels of room to layer, cut, and sculpt in real time. That's why the booth on this site is playable: it's the actual instrument, scaled down to your browser.</p>
+      </div>
+      <div class="about-side reveal">
+        <div class="rig-card">
+          <h3>The Rig</h3>
+          <ul>
+            <li><span>Mixer</span>Pioneer DJM-V10</li>
+            <li><span>Decks</span>2 × Pioneer CDJ</li>
+            <li><span>Range</span>Deep · Tech · Peak-time house</li>
+            <li><span>Cruise</span>124–128 BPM</li>
+          </ul>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><b>6</b><span>mixer channels</span></div>
+          <div class="stat"><b>2</b><span>decks spinning</span></div>
+          <div class="stat"><b>1</b><span>storm</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRESS / EPK ============ -->
+  <section class="section" id="press">
+    <div class="section-head reveal">
+      <span class="section-num">05</span>
+      <h2>Press Kit</h2>
+      <p>Everything a promoter needs, one click away.</p>
+    </div>
+    <div class="press-grid">
+      <!-- EDITME: swap these tiles for real press photos (hi-res, 3:4 or square) -->
+      <div class="press-tile reveal"><span>PRESS PHOTO</span></div>
+      <div class="press-tile reveal"><span>LIVE SHOT</span></div>
+      <div class="press-tile reveal"><span>BOOTH SHOT</span></div>
+    </div>
+    <div class="press-actions reveal">
+      <a class="btn btn-ghost" id="epkBtn" href="#book">Request EPK</a>
+      <p class="press-note">Bio, hi-res photos, logos, and the tech rider — bundled and ready on request while the download link is being finished.</p>
+    </div>
+  </section>
+
+  <!-- ============ BOOKING ============ -->
+  <section class="section section-book" id="book">
+    <div class="section-head reveal">
+      <span class="section-num">06</span>
+      <h2>Book Raiden</h2>
+      <p>Clubs, festivals, warehouses, boats — if it has power, it can have thunder.</p>
+    </div>
+    <form class="book-form reveal" id="bookForm">
+      <div class="form-row">
+        <label>Your name<input type="text" name="name" required autocomplete="name" /></label>
+        <label>Email<input type="email" name="email" required autocomplete="email" /></label>
+      </div>
+      <div class="form-row">
+        <label>Event date<input type="date" name="date" /></label>
+        <label>Venue / City<input type="text" name="venue" placeholder="Club name, city" /></label>
+      </div>
+      <label>Tell me about the night<textarea name="message" rows="4" placeholder="Lineup, set length, crowd, budget range…"></textarea></label>
+      <button type="submit" class="btn btn-accent btn-big">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M13 2 L4 14 h6 L9 22 L20 9 h-7 z" fill="currentColor"/></svg>
+        Send booking inquiry
+      </button>
+      <p class="form-note" id="formNote"></p>
+    </form>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M13 2 L4 14 h6 L9 22 L20 9 h-7 z" fill="currentColor"/></svg>
+        <span>RAIDEN</span>
+        <em>雷電 · house music, struck by lightning</em>
+      </div>
+      <div class="footer-socials">
+        <!-- EDITME: drop real profile URLs into href -->
+        <a href="#" data-social="soundcloud" aria-label="SoundCloud">SoundCloud</a>
+        <a href="#" data-social="instagram" aria-label="Instagram">Instagram</a>
+        <a href="#" data-social="tiktok" aria-label="TikTok">TikTok</a>
+        <a href="#" data-social="youtube" aria-label="YouTube">YouTube</a>
+        <a href="#" data-social="spotify" aria-label="Spotify">Spotify</a>
+      </div>
+      <p class="footer-fine">© <span id="year"></span> RAIDEN. All thunder reserved.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/audio.js"></script>
+  <script src="js/visualizer.js"></script>
+  <script src="js/booth.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
