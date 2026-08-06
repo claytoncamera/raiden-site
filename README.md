@@ -3,6 +3,11 @@
 Marketing + booking site for house DJ **Raiden** (雷電 — "thunder and lightning").
 Static, zero build step, vanilla HTML/CSS/JS. Built 2026-08-05 as the foundation to grow on.
 
+**Live: [raiden.biz](https://raiden.biz)** — GitHub Pages, deploys automatically on push to `main`.
+
+> **Picking this project up fresh?** See [`CLAUDE.md`](CLAUDE.md) for the full agent-facing brief
+> — architecture, what's already built, the real punch list, and the ground rules.
+
 ## Run it
 
 ```bash
@@ -28,7 +33,10 @@ Any static host works (GitHub Pages, Vercel, Railway static, Hostinger).
 | **Storm system** | `js/visualizer.js` (rewrite) | Fractal lightning: stepped-leader preview → double-flash strike → ember afterglow, recursive branches, impact ripples. Storm clouds (pre-rendered sprites), sheet lightning, angled rain — rain intensifies while the ION RAIN deck plays. A storm-level meter (driven by the low band) escalates everything as the set heats up. Click empty sky to summon a bolt (`RaidenStrike(x, y)` is public). ~28% of strikes aim at the title, which jolts. |
 | **Thunder** | `js/audio.js` | Synthesized rumble (looped noise → sweeping lowpass → swell envelope) under strikes, deliberately bypassing the DJ filter. Only fires after audio is gesture-unlocked; cooldown 3.2s. |
 | **Title & type extras** | `css/style.css`, `js/main.js` | Beat-reactive title glow, neon flicker on the E, 雷/電 kanji watermarks, hero parallax + fade on scroll, giant outlined footer wordmark, lighthouse-beam sweep on mix-card hover. |
-| **Merch — DROP 001** | `index.html`, `css/style.css` | Stormwear section: monoline SVG garments (bolt tee, 雷電 hoodie, storm cap, slipmats) with theme-reactive glowing marks, charge-sweep drop chips, honest "in the lab" status + notify list. EDITME: link cards to the real store when it exists. |
+| **Merch — DROP 001** | `index.html`, `assets/merch/*.jpg` | Stormwear section with **real product photography** — blank garments generated with a dark-warehouse/violet-rim-light look, then the actual bolt/雷電 marks composited on top (never AI-redrawn). Charge-sweep drop chips, honest "in the lab" status + notify list, no fake prices. EDITME: link cards to a real store when one exists. |
+| **Storm Visuals gallery** | `js/artworks.js` | 6 generative canvas art pieces the site paints itself — click any tile to re-roll it. Repaints in the active lighting preset's colors. |
+| **⚡ RISE / DROP + tempo + spinback** | `js/audio.js`, `js/booth.js` | A build-drop button (2-bar snare roll + riser + auto-filter climb → crash + lightning), a master tempo slider (118–134 BPM), and vinyl spinback on platter drag. |
+| **GOD MODE + achievements** | `js/main.js` | Type "raiden" anywhere to unlock a secret 5th gold lighting preset (OVERDRIVE). 7 hidden achievements with a footer trophy row. Rave-name generator in the chat panel. |
 | **Site flow** | `js/main.js` | Scroll-spy nav (active section highlighted), storm-gradient scroll progress bar, back-to-top bolt, hero "now playing" chip (appears when the booth runs, links to it), staggered hero entrance, kanji scroll drift, footer quick links, about→booking cross-link. |
 
 ## Placeholders to fill (all marked `EDITME` in source)
@@ -41,7 +49,8 @@ Any static host works (GitHub Pages, Vercel, Railway static, Hostinger).
 6. **Bio** — `index.html` about section; kept honest (no invented accolades). Add city/residency when ready.
 7. **EPK PDF** — press section button currently routes to booking; point at a real file when it exists.
 8. **Newsletter** — wire Mailchimp/Buttondown/Resend in `js/main.js`.
-9. **Domain + OG image** — add `og:image` + canonical once the domain is picked.
+9. **Gear/story accuracy check** — confirm DJM-V10 + 2 CDJs, house genre, ~126 BPM, deep→peak-time
+   style are all actually accurate to Raiden — the whole audio/visual identity assumes this.
 
 ## Design notes
 
