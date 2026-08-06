@@ -25,6 +25,9 @@ Any static host works (GitHub Pages, Vercel, Railway static, Hostinger).
 | **Crowd chat (sim)** | `js/chat.js` | Labeled "chat sim". Reacts to real booth actions via `raiden:action` events (cut the kick → "kick GONE 😭", filter sweep → "sweep it loooow") + ambient chatter while playing. |
 | **Stage scene** | `js/scene.js` | Moving-head light beams + floor haze behind the rig (colored by the active lighting preset), crowd silhouettes in front — heads bob to the low end, arms and glowing phones go up on sustained energy. Sleeps when off-screen. |
 | **Hero crowd + film grain** | `js/visualizer.js`, `css/style.css` | Silhouette skyline along the hero bottom (audio-reactive), sitewide animated film grain, chromatic aberration on the title, mono/stencil label typography (`[ 01 ]`), outlined ticker words, nav VU meter while live. |
+| **Storm system** | `js/visualizer.js` (rewrite) | Fractal lightning: stepped-leader preview → double-flash strike → ember afterglow, recursive branches, impact ripples. Storm clouds (pre-rendered sprites), sheet lightning, angled rain — rain intensifies while the ION RAIN deck plays. A storm-level meter (driven by the low band) escalates everything as the set heats up. Click empty sky to summon a bolt (`RaidenStrike(x, y)` is public). ~28% of strikes aim at the title, which jolts. |
+| **Thunder** | `js/audio.js` | Synthesized rumble (looped noise → sweeping lowpass → swell envelope) under strikes, deliberately bypassing the DJ filter. Only fires after audio is gesture-unlocked; cooldown 3.2s. |
+| **Title & type extras** | `css/style.css`, `js/main.js` | Beat-reactive title glow, neon flicker on the E, 雷/電 kanji watermarks, hero parallax + fade on scroll, giant outlined footer wordmark, lighthouse-beam sweep on mix-card hover. |
 
 ## Placeholders to fill (all marked `EDITME` in source)
 
