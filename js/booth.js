@@ -147,6 +147,88 @@
     if (e.key === "0" || e.key === "Home") { applyKnob(0); e.preventDefault(); }
   });
 
+  /* ---------- RISE / DROP ---------- */
+  const riseBtn = document.getElementById("riseBtn");
+  if (riseBtn) {
+    riseBtn.addEventListener("click", () => {
+      const ok = RaidenAudio.riseDrop();
+      if (!ok) {
+        act("riseidle", {});
+        return;
+      }
+      riseBtn.classList.add("armed");
+      act("rise", {});
+    });
+    RaidenAudio.on("risestart", () => {
+      riseBtn.classList.remove("armed");
+      riseBtn.classList.add("building");
+    });
+    RaidenAudio.on("drop", () => {
+      riseBtn.classList.remove("armed", "building");
+      act("drop", {});
+      if (window.RaidenStrike) {
+        RaidenStrike();
+        setTimeout(() => window.RaidenStrike && RaidenStrike(), 180);
+      }
+    });
+  }
+
+  /* ---------- tempo ---------- */
+  const tempoSlider = document.getElementById("tempoSlider");
+  const masterBpmEl = document.getElementById("masterBpm");
+  const cdjBpms = document.querySelectorAll(".cdj-bpm");
+  if (tempoSlider) {
+    tempoSlider.addEventListener("input", () => {
+      RaidenAudio.init();
+      const v = RaidenAudio.setBpm(parseFloat(tempoSlider.value));
+      masterBpmEl.textContent = v.toFixed(1);
+      cdjBpms.forEach((el) => (el.textContent = v.toFixed(1)));
+      act("tempo", { bpm: v });
+    });
+    tempoSlider.addEventListener("dblclick", () => {
+      tempoSlider.value = 126;
+      tempoSlider.dispatchEvent(new Event("input"));
+    });
+  }
+
+  /* ---------- platter drag → spinback ---------- */
+  document.querySelectorAll(".platter").forEach((platter) => {
+    const deck = platter.dataset.deck;
+    const disc = platter.querySelector(".platter-disc");
+    let dragging = false;
+    let startY = 0;
+    let travel = 0;
+    platter.style.cursor = "grab";
+    platter.addEventListener("pointerdown", (e) => {
+      if (!RaidenAudio.ready || !RaidenAudio.isPlaying(deck)) return;
+      dragging = true;
+      startY = e.clientY;
+      travel = 0;
+      platter.setPointerCapture(e.pointerId);
+      disc.style.animationPlayState = "paused";
+      platter.style.cursor = "grabbing";
+      e.preventDefault();
+    });
+    platter.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      travel = e.clientY - startY;
+      disc.style.transform = `rotate(${travel * 1.6}deg)`;
+    });
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      disc.style.transform = "";
+      disc.style.animationPlayState = "";
+      platter.style.cursor = "grab";
+      if (Math.abs(travel) > 45 && RaidenAudio.spinback(deck)) {
+        setDeckUI(deck, false);
+        act("spinback", { deck });
+      }
+    };
+    platter.addEventListener("pointerup", release);
+    platter.addEventListener("pointercancel", release);
+  });
+
   /* ---------- CDJ waveform screens ---------- */
   let waveAccent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
   const waves = {};
@@ -239,6 +321,7 @@
       if (!RaidenAudio.isPlaying("a")) {
         RaidenAudio.toggleDeck("a");
         setDeckUI("a", true);
+        act("play", { deck: "a", on: true });
       }
       if (window.RaidenStrike) window.RaidenStrike();
     },

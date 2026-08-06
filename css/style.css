@@ -46,6 +46,14 @@ html[data-light="ice"] {
   --glow: rgba(96, 165, 250, 0.5);
 }
 
+/* unlocked by typing the name — the thunder god's own lighting */
+html[data-light="overdrive"] {
+  --accent: #fbbf24;
+  --accent-2: #fef3c7;
+  --accent-soft: rgba(251, 191, 36, 0.16);
+  --glow: rgba(251, 191, 36, 0.6);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
@@ -278,6 +286,12 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 .light-dot[data-light="ember"] { background: #f59e0b; }
 .light-dot[data-light="acid"]  { background: #a3e635; }
 .light-dot[data-light="ice"]   { background: #60a5fa; }
+.light-dot[data-light="overdrive"] {
+  background: #fbbf24;
+  display: none;
+}
+.light-dot[data-light="overdrive"].unlocked { display: block; animation: godGlow 1.6s ease-in-out infinite; }
+@keyframes godGlow { 50% { box-shadow: 0 0 12px 3px #fbbf24; } }
 .light-dot.active { box-shadow: 0 0 10px 2px currentColor; transform: scale(1.2); }
 
 /* ---------- hero ---------- */
@@ -638,6 +652,17 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   color: var(--text-dim);
 }
 .chat-head em { font-style: normal; opacity: 0.55; letter-spacing: 0.08em; }
+.chat-join {
+  background: none;
+  border: none;
+  color: var(--accent-2);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+.chat-join:hover { opacity: 1; text-shadow: 0 0 8px var(--accent-2); }
 .chat-log {
   flex: 1;
   overflow-y: auto;
@@ -994,9 +1019,61 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 }
 .knob-sub i { font-style: normal; }
 
+.rise-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--accent-2);
+  background: rgba(34, 211, 238, 0.06);
+  color: var(--accent-2);
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  transition: box-shadow 0.2s ease, transform 0.15s ease, background 0.2s ease;
+}
+.rise-btn:hover { box-shadow: 0 0 20px rgba(34, 211, 238, 0.35); transform: translateY(-1px); }
+.rise-btn.armed { animation: riseArm 0.5s steps(2) infinite; }
+.rise-btn.building {
+  background: var(--accent-2);
+  color: #06060c;
+  animation: riseBuild 0.24s steps(2) infinite;
+  box-shadow: 0 0 26px rgba(34, 211, 238, 0.6);
+}
+@keyframes riseArm { 50% { background: rgba(34, 211, 238, 0.2); } }
+@keyframes riseBuild { 50% { opacity: 0.75; } }
+
 .master-readout {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+.tempo {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 110px;
+  height: 18px;
+  margin-top: 0.35rem;
+  background: transparent;
+  cursor: ew-resize;
+}
+.tempo::-webkit-slider-runnable-track { height: 3px; background: rgba(255, 255, 255, 0.12); border-radius: 2px; }
+.tempo::-moz-range-track { height: 3px; background: rgba(255, 255, 255, 0.12); border-radius: 2px; }
+.tempo::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px; height: 14px;
+  margin-top: -5.5px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #3a3a4a, #1c1c28);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.tempo::-moz-range-thumb {
+  width: 10px; height: 14px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #3a3a4a, #1c1c28);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 .master-bpm {
   display: block;
@@ -1583,6 +1660,16 @@ body.spotlight-on .spotlight { opacity: 0.9; }
 }
 .footer-socials a:hover { color: var(--accent); }
 .footer-fine { font-size: 0.75rem; color: var(--text-dim); opacity: 0.7; }
+.footer-achv { display: flex; gap: 0.7rem; }
+.footer-achv .achv {
+  font-size: 1.05rem;
+  filter: grayscale(1);
+  opacity: 0.25;
+  cursor: help;
+  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.2s ease;
+}
+.footer-achv .achv.got { filter: none; opacity: 1; }
+.footer-achv .achv:hover { transform: scale(1.25); }
 
 /* ---------- scroll progress + back to top ---------- */
 .scroll-progress {

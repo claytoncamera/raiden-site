@@ -6,9 +6,9 @@
    ============================================================ */
 
 window.RaidenAudio = (() => {
-  const BPM = 126;
+  let bpm = 126;
   const STEPS_PER_BAR = 16;
-  const SECONDS_PER_STEP = 60 / BPM / 4;
+  let SECONDS_PER_STEP = 60 / bpm / 4;
   const LOOP_BARS = 4;
   const LOOP_STEPS = STEPS_PER_BAR * LOOP_BARS;
   const LOOKAHEAD_MS = 25;
@@ -221,7 +221,63 @@ window.RaidenAudio = (() => {
     }
   }
 
+  function applyFilterValue(v) {
+    filterValue = Math.min(1, Math.max(-1, v));
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    if (Math.abs(filterValue) < 0.06) {
+      masterFilter.type = "lowpass";
+      masterFilter.frequency.setTargetAtTime(20000, t, 0.03);
+      masterFilter.Q.setTargetAtTime(0.9, t, 0.03);
+    } else if (filterValue < 0) {
+      masterFilter.type = "lowpass";
+      const f = 20000 * Math.pow(150 / 20000, -filterValue);
+      masterFilter.frequency.setTargetAtTime(f, t, 0.03);
+      masterFilter.Q.setTargetAtTime(4, t, 0.03);
+    } else {
+      masterFilter.type = "highpass";
+      const f = 20 * Math.pow(2600 / 20, filterValue);
+      masterFilter.frequency.setTargetAtTime(f, t, 0.03);
+      masterFilter.Q.setTargetAtTime(4, t, 0.03);
+    }
+  }
+
+  /* ---------------- rise / drop choreography ---------------- */
+  let riser = null; // {state: "armed"|"building", startStep, savedFilter}
+
+  function handleRiser(step, time) {
+    if (!riser) return;
+    if (riser.state === "armed" && step % STEPS_PER_BAR === 0) {
+      riser.state = "building";
+      riser.startStep = step;
+      riser.savedFilter = filterValue;
+      startRiserAudio(time);
+      emit("risestart", {});
+    }
+    if (riser.state !== "building") return;
+    const rel = step - riser.startStep;
+    if (rel >= 32) {
+      // THE DROP
+      const saved = riser.savedFilter;
+      riser = null;
+      playCrash(time);
+      applyFilterValue(saved); // hand the filter back to the knob position
+      emit("drop", {});
+      return;
+    }
+    // snare roll: 8ths in bar one, 16ths in bar two, rising velocity
+    const roll = rel < 16 ? rel % 2 === 0 : true;
+    if (roll) playSnare(time, 0.25 + (rel / 32) * 0.55);
+    // auto high-pass climb across the build
+    const frac = rel / 32;
+    masterFilter.type = "highpass";
+    masterFilter.frequency.setTargetAtTime(20 + frac * frac * 900, time, 0.05);
+    masterFilter.Q.setTargetAtTime(2.5, time, 0.05);
+  }
+
   function scheduleStep(step, time) {
+    handleRiser(step, time);
+    const building = riser && riser.state === "building";
     for (const deckId of ["a", "b"]) {
       const deck = decks[deckId];
       // quantized start: arm fires on the next bar boundary
@@ -241,6 +297,7 @@ window.RaidenAudio = (() => {
 
       const loopStep = (step - deck.startStep) % LOOP_STEPS;
       for (const role of ROLES) {
+        if (building && (role === "kick" || role === "bass")) continue; // the build strips the floor out
         const events = INDEXED[deckId][role].get(loopStep);
         if (!events) continue;
         for (const ev of events) {
@@ -400,6 +457,54 @@ window.RaidenAudio = (() => {
     osc2.start(t); osc2.stop(t + len + 0.1);
   }
 
+  function playSnare(t, vel) {
+    const src = noiseSource(t, 0.16);
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = 1900;
+    bp.Q.value = 0.9;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(vel * 0.55, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+    src.connect(bp); bp.connect(g); g.connect(out("perc"));
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(210, t);
+    osc.frequency.exponentialRampToValueAtTime(140, t + 0.08);
+    const og = ctx.createGain();
+    og.gain.setValueAtTime(vel * 0.3, t);
+    og.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+    osc.connect(og); og.connect(out("perc"));
+    osc.start(t); osc.stop(t + 0.1);
+  }
+
+  function playCrash(t) {
+    const src = noiseSource(t, 1.4);
+    const hp = ctx.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.value = 4200;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.4, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 1.3);
+    src.connect(hp); hp.connect(g); g.connect(compressor);
+  }
+
+  function startRiserAudio(t) {
+    const dur = SECONDS_PER_STEP * 32;
+    const src = noiseSource(t, dur);
+    src.loop = true;
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.Q.value = 1.4;
+    bp.frequency.setValueAtTime(260, t);
+    bp.frequency.exponentialRampToValueAtTime(5200, t + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.001, t);
+    g.gain.exponentialRampToValueAtTime(0.34, t + dur);
+    g.gain.setTargetAtTime(0.0001, t + dur, 0.03);
+    src.connect(bp); bp.connect(g); g.connect(compressor);
+  }
+
   let noiseBuffer = null;
   function noiseSource(t, dur) {
     if (!noiseBuffer) {
@@ -452,7 +557,7 @@ window.RaidenAudio = (() => {
   }
 
   return {
-    BPM,
+    get BPM() { return bpm; },
     ROLES,
     get ready() { return !!ctx; },
     init,
@@ -482,6 +587,12 @@ window.RaidenAudio = (() => {
       const deck = decks[id];
       deck.playing = false;
       deck.pendingStart = false;
+      if (riser && !decks.a.playing && !decks.b.playing) {
+        // build with no music = pointless; cancel and give the filter back
+        const saved = riser.savedFilter;
+        riser = null;
+        applyFilterValue(saved);
+      }
       emit("deckstate", { deck: id, playing: false });
     },
 
@@ -546,24 +657,55 @@ window.RaidenAudio = (() => {
     },
 
     setFilter(v) {
-      filterValue = Math.min(1, Math.max(-1, v));
-      if (!ctx) return;
+      applyFilterValue(v);
+    },
+
+    setBpm(v) {
+      bpm = Math.min(134, Math.max(118, v));
+      SECONDS_PER_STEP = 60 / bpm / 4;
+      if (ctx && delayNode) delayNode.delayTime.setTargetAtTime(SECONDS_PER_STEP * 3, ctx.currentTime, 0.08);
+      emit("tempo", { bpm });
+      return bpm;
+    },
+    getBpm() { return bpm; },
+
+    // 2-bar build (kick+bass stripped, snare roll, riser, auto HPF climb) → drop
+    riseDrop() {
+      init();
+      if (ctx.state === "suspended") ctx.resume();
+      if (!this.anyPlaying()) return false;
+      if (riser) return true; // already armed or building
+      riser = { state: "armed", startStep: 0, savedFilter: filterValue };
+      emit("risearm", {});
+      return true;
+    },
+    isRising() { return !!riser; },
+
+    // vinyl spinback: descending screech, then the deck stops
+    spinback(id) {
+      if (!ctx || !decks[id].playing) return false;
       const t = ctx.currentTime;
-      if (Math.abs(filterValue) < 0.06) {
-        masterFilter.type = "lowpass";
-        masterFilter.frequency.setTargetAtTime(20000, t, 0.03);
-        masterFilter.Q.setTargetAtTime(0.9, t, 0.03);
-      } else if (filterValue < 0) {
-        masterFilter.type = "lowpass";
-        const f = 20000 * Math.pow(150 / 20000, -filterValue);
-        masterFilter.frequency.setTargetAtTime(f, t, 0.03);
-        masterFilter.Q.setTargetAtTime(4, t, 0.03);
-      } else {
-        masterFilter.type = "highpass";
-        const f = 20 * Math.pow(2600 / 20, filterValue);
-        masterFilter.frequency.setTargetAtTime(f, t, 0.03);
-        masterFilter.Q.setTargetAtTime(4, t, 0.03);
-      }
+      const osc = ctx.createOscillator();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(320, t);
+      osc.frequency.exponentialRampToValueAtTime(32, t + 0.85);
+      const og = ctx.createGain();
+      og.gain.setValueAtTime(0.22, t);
+      og.gain.exponentialRampToValueAtTime(0.001, t + 0.9);
+      const lp = ctx.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.frequency.setValueAtTime(2400, t);
+      lp.frequency.exponentialRampToValueAtTime(180, t + 0.85);
+      osc.connect(lp); lp.connect(og); og.connect(compressor);
+      osc.start(t); osc.stop(t + 0.95);
+      const src = noiseSource(t, 0.9);
+      const ng = ctx.createGain();
+      ng.gain.setValueAtTime(0.12, t);
+      ng.gain.exponentialRampToValueAtTime(0.001, t + 0.85);
+      src.connect(ng); ng.connect(lp);
+      setTimeout(() => this.cueDeck(id), 780);
+      emit("spinback", { deck: id });
+      return true;
     },
     getFilter() { return filterValue; },
 

@@ -72,6 +72,7 @@
         <button class="light-dot" data-light="ember" title="Ember" aria-label="Ember lighting"></button>
         <button class="light-dot" data-light="acid" title="Acid" aria-label="Acid lighting"></button>
         <button class="light-dot" data-light="ice" title="Ice" aria-label="Ice lighting"></button>
+        <button class="light-dot" data-light="overdrive" title="OVERDRIVE — 雷神" aria-label="Overdrive lighting (secret)"></button>
       </div>
       <a href="#book" class="btn btn-accent btn-small nav-book">Book Raiden</a>
     </div>
@@ -173,9 +174,14 @@
             <span class="knob-label">FILTER</span>
             <span class="knob-sub"><i>LPF</i><i>HPF</i></span>
           </div>
+          <button class="rise-btn" id="riseBtn" title="Two-bar build-up, then the drop">
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M13 2 L4 14 h6 L9 22 L20 9 h-7 z" fill="currentColor"/></svg>
+            RISE
+          </button>
           <div class="master-readout">
             <span class="master-bpm" id="masterBpm">126.0</span>
             <span class="master-bpm-label">BPM · SYNCED</span>
+            <input type="range" class="tempo" id="tempoSlider" min="118" max="134" step="0.5" value="126" aria-label="Master tempo" />
           </div>
         </div>
         <div class="mixer-xfade">
@@ -219,7 +225,7 @@
         <div class="stream-scan" aria-hidden="true"></div>
       </div>
       <aside class="chat" aria-label="Crowd chat (simulated)">
-        <div class="chat-head"><span>CROWD</span><em>chat&nbsp;sim</em></div>
+        <div class="chat-head"><span>CROWD</span><button class="chat-join" id="chatJoin" type="button">[ join ]</button></div>
         <div class="chat-log" id="chatLog"></div>
       </aside>
     </div>
@@ -498,6 +504,7 @@
         <a href="#press">Press</a>
         <a href="#book">Booking</a>
       </nav>
+      <div class="footer-achv" id="footerAchv" aria-label="Achievements — play with the site to unlock"></div>
       <p class="footer-fine">© <span id="year"></span> RAIDEN. All thunder reserved.</p>
     </div>
   </footer>

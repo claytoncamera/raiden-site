@@ -44,6 +44,7 @@
   let clouds = [];
   let bolts = [];
   let ripples = [];
+  let sparks = [];
   let cloudSprite = null;
 
   let stormLevel = 0.18;      // 0..1 — everything scales off this
@@ -222,7 +223,7 @@
       lastThunderAt = now;
       setTimeout(() => RaidenAudio.thunder(0.35 + stormLevel * 0.55), 110);
     }
-    window.dispatchEvent(new CustomEvent("raiden:strike", { detail: { title: aimedTitle } }));
+    window.dispatchEvent(new CustomEvent("raiden:strike", { detail: { title: aimedTitle, manual: opts.x != null } }));
   }
 
   function drawBolt(bolt, now) {
@@ -498,6 +499,21 @@
 
     bolts = bolts.filter((b) => drawBolt(b, now));
     drawRipples(now);
+
+    // cursor sparks
+    sparks = sparks.filter((s) => {
+      const age = now - s.born;
+      if (age > s.life) return false;
+      const fade = 1 - age / s.life;
+      ctx2d.strokeStyle = hexA(accent2, 0.7 * fade);
+      ctx2d.lineWidth = 1.1;
+      ctx2d.beginPath();
+      ctx2d.moveTo(s.x, s.y);
+      ctx2d.lineTo(s.x + Math.cos(s.a) * s.len * fade, s.y + Math.sin(s.a) * s.len * fade);
+      ctx2d.stroke();
+      return true;
+    });
+
     drawCrowd(now);
 
     requestAnimationFrame(frame);
@@ -517,7 +533,36 @@
       const r = canvas.getBoundingClientRect();
       strike({ x: e.clientX - r.left, y: e.clientY - r.top });
     });
+
+    // electric sparks trail a fast-moving cursor
+    let lastPX = 0, lastPY = 0, lastPT = 0;
+    hero.addEventListener("pointermove", (e) => {
+      const now = performance.now();
+      const dt = now - lastPT;
+      if (dt > 0 && lastPT) {
+        const r = canvas.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        const speed = Math.hypot(x - lastPX, y - lastPY) / dt;
+        if (speed > 0.9 && sparks.length < 36) {
+          for (let i = 0; i < 2; i++) {
+            const a = Math.random() * Math.PI * 2;
+            sparks.push({ x, y, a, len: 5 + Math.random() * 9, born: now, life: 200 + Math.random() * 160 });
+          }
+        }
+        lastPX = x; lastPY = y;
+      } else {
+        const r = canvas.getBoundingClientRect();
+        lastPX = e.clientX - r.left; lastPY = e.clientY - r.top;
+      }
+      lastPT = now;
+    }, { passive: true });
   }
+
+  // god mode: the storm surges
+  window.addEventListener("raiden:godmode", () => {
+    stormLevel = Math.max(stormLevel, 0.75);
+    nextCrawlerAt = performance.now() + 600;
+  });
 
   window.addEventListener("resize", () => { resize(); if (reduceMotion) drawStaticFrame(); });
   resize();

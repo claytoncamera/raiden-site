@@ -345,6 +345,94 @@
     }, 800);
   }
 
+  /* ---------- GOD MODE: type the name, wake the god ---------- */
+  const godDot = document.querySelector('.light-dot[data-light="overdrive"]');
+  function unlockGod(activate) {
+    if (godDot) godDot.classList.add("unlocked");
+    try { localStorage.setItem("raiden-god", "1"); } catch (_) {}
+    if (activate) {
+      setLight("overdrive");
+      showToast("⚡⚡ GOD MODE — 雷神 awakened. OVERDRIVE lighting unlocked.");
+      if (window.RaidenStrike && !reduceMotion) {
+        RaidenStrike();
+        setTimeout(() => RaidenStrike(), 200);
+        setTimeout(() => RaidenStrike(), 430);
+      }
+      window.dispatchEvent(new CustomEvent("raiden:godmode"));
+    }
+  }
+  try { if (localStorage.getItem("raiden-god")) unlockGod(false); } catch (_) {}
+  let typed = "";
+  document.addEventListener("keydown", (e) => {
+    if (e.target && e.target.matches && e.target.matches("input, textarea, select")) return;
+    if (!e.key || e.key.length !== 1) return;
+    typed = (typed + e.key.toLowerCase()).slice(-6);
+    if (typed === "raiden") { typed = ""; unlockGod(true); }
+  });
+
+  /* ---------- achievements ---------- */
+  const ACHV = [
+    { id: "first_drop", icon: "⚡", name: "FIRST CONTACT", hint: "drop the beat" },
+    { id: "two_decks", icon: "🌀", name: "DOUBLE STORM", hint: "run both decks at once" },
+    { id: "sweeper", icon: "🎛", name: "FILTER SURGEON", hint: "sweep the filter both ways" },
+    { id: "summoner", icon: "🌩", name: "STORM SUMMONER", hint: "summon 5 bolts by hand" },
+    { id: "lights", icon: "💡", name: "LIGHTING TECH", hint: "run every lighting preset" },
+    { id: "drop_lord", icon: "🔥", name: "DROP COMMANDER", hint: "ride a RISE to the drop" },
+    { id: "god", icon: "⛩", name: "雷神", hint: "speak the name" },
+  ];
+  let achState = {};
+  try { achState = JSON.parse(localStorage.getItem("raiden-achv") || "{}"); } catch (_) {}
+  const achRow = document.getElementById("footerAchv");
+  function renderAchv() {
+    if (!achRow) return;
+    achRow.innerHTML = "";
+    for (const a of ACHV) {
+      const s = document.createElement("span");
+      s.className = "achv" + (achState[a.id] ? " got" : "");
+      s.textContent = a.icon;
+      s.title = achState[a.id] ? `${a.name} — unlocked` : `??? — ${a.hint}`;
+      achRow.appendChild(s);
+    }
+  }
+  function award(id) {
+    if (achState[id]) return;
+    achState[id] = true;
+    try { localStorage.setItem("raiden-achv", JSON.stringify(achState)); } catch (_) {}
+    const a = ACHV.find((x) => x.id === id);
+    showToast(`🏆 ${a.icon} ${a.name} — unlocked`);
+    window.dispatchEvent(new CustomEvent("raiden:achievement", { detail: { name: a.name } }));
+    renderAchv();
+  }
+  renderAchv();
+
+  // achievement triggers
+  let sweepLow = false, sweepHigh = false, manualBolts = 0;
+  const lightsSeen = new Set();
+  window.addEventListener("raiden:action", (e) => {
+    const d = e.detail || {};
+    if (d.type === "play" && d.on) {
+      award("first_drop");
+      if (window.RaidenAudio && RaidenAudio.isPlaying("a") && RaidenAudio.isPlaying("b")) award("two_decks");
+    }
+    if (d.type === "filter") {
+      if (d.v < -0.6) sweepLow = true;
+      if (d.v > 0.6) sweepHigh = true;
+      if (sweepLow && sweepHigh) award("sweeper");
+    }
+    if (d.type === "drop") award("drop_lord");
+  });
+  window.addEventListener("raiden:strike", (e) => {
+    if (e.detail && e.detail.manual) {
+      manualBolts++;
+      if (manualBolts >= 5) award("summoner");
+    }
+  });
+  dots.forEach((d) => d.addEventListener("click", () => {
+    lightsSeen.add(d.dataset.light);
+    if (["storm", "ember", "acid", "ice"].every((l) => lightsSeen.has(l))) award("lights");
+  }));
+  window.addEventListener("raiden:godmode", () => award("god"));
+
   /* ---------- footer year ---------- */
   document.getElementById("year").textContent = new Date().getFullYear();
 })();

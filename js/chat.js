@@ -38,6 +38,11 @@
     filterReset: ["clean reset", "and we're back", "full spectrum restored"],
     xfade: ["blend is butter", "seamless wow", "crossfader work 👌"],
     fader: ["riding the faders", "mixer workout", "V10 getting touched properly"],
+    rise: ["oh no. oh NO. here it comes", "BUILD IT UP 📈", "everybody UP"],
+    drop: ["DRRROOOOPPP 🔥🔥🔥", "OI OI OI OI", "THE FLOOR IS GONE", "absolute scenes"],
+    riseidle: ["can't build on silence lol", "press play first 😅"],
+    spinback: ["SPINBACKKK", "cheeky rewind 🌀", "he really pulled it back"],
+    tempo: ["tempo games 👀", "pitch riding, respect", "faster?? braver than me"],
   };
 
   const MAX_MSGS = 42;
@@ -102,8 +107,51 @@
       case "fader":
         react("fader", 14000);
         break;
+      case "rise":
+        react("rise", 8000);
+        break;
+      case "drop":
+        react("drop", 4000);
+        setTimeout(() => react("drop", 0), 700); // the crowd doubles down
+        break;
+      case "riseidle":
+        react("riseidle", 8000);
+        break;
+      case "spinback":
+        react("spinback", 6000);
+        break;
+      case "tempo":
+        react("tempo", 16000);
+        break;
     }
   });
+
+  /* ---------- god mode + achievements ---------- */
+  window.addEventListener("raiden:godmode", () => {
+    post("⚡⚡⚡ 雷神 HAS ENTERED THE BUILDING ⚡⚡⚡");
+    setTimeout(() => post("GOLD LIGHTS?? this is history"), 900);
+  });
+  window.addEventListener("raiden:achievement", (e) => {
+    if (Date.now() - lastStrikeMsg < 3000) return;
+    post(`🏆 someone just earned ${e.detail.name} — respect`);
+  });
+
+  /* ---------- rave name ---------- */
+  const RAVE_A = ["midnight", "warehouse", "voltage", "concrete", "neon", "sub", "strobe", "fog", "静かな", "basement", "steel", "amen"];
+  const RAVE_B = ["wanderer", "prophet", "gremlin", "monk", "cadet", "witch", "engineer", "pilgrim", "ghost", "captain", "disciple", "kid"];
+  const joinBtn = document.getElementById("chatJoin");
+  let raveName = null;
+  try { raveName = localStorage.getItem("raiden-rave-name"); } catch (_) {}
+  if (joinBtn) {
+    if (raveName) joinBtn.textContent = `[ ${raveName} ]`;
+    joinBtn.addEventListener("click", () => {
+      raveName = `${pick(RAVE_A)}_${pick(RAVE_B)}${Math.floor(Math.random() * 90) + 10}`;
+      try { localStorage.setItem("raiden-rave-name", raveName); } catch (_) {}
+      joinBtn.textContent = `[ ${raveName} ]`;
+      post(`→ ${raveName} joined the crowd`, ["bpm_police", "#fdba74"]);
+      setTimeout(() => post(`yo ${raveName} 👋`), 1200);
+    });
+  }
 
   /* ---------- lightning reactions (rare) ---------- */
   const STRIKE_LINES = ["did anyone else see that bolt ⚡", "the SKY is mixing too", "lightning on beat??", "storm synced. unreal."];
