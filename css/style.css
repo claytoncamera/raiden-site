@@ -1133,6 +1133,14 @@ body.spotlight-on .spotlight { opacity: 0.9; }
   .spotlight { display: none; }
 }
 
+/* ---------- ?static=1 deterministic render ---------- */
+html.static-mode { scroll-behavior: auto; }
+.static-mode *, .static-mode *::before, .static-mode *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.static-mode .reveal { opacity: 1; transform: none; }
+
 /* ============================================================
    REDUCED MOTION
    ============================================================ */

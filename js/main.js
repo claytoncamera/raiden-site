@@ -16,6 +16,11 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // ?static=1 — deterministic no-animation render (screenshots, SEO audits, perf tests)
+  if (new URLSearchParams(location.search).has("static")) {
+    document.documentElement.classList.add("static-mode");
+  }
+
   /* ---------- nav ---------- */
   const nav = document.getElementById("nav");
   const burger = document.getElementById("navBurger");
