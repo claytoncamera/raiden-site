@@ -154,3 +154,4 @@ Everything else — HTML, CSS, JS, the whole interactive site — has zero such 
 The punch list above (booking email → social URLs → real bio → real mixes → real gigs, roughly in
 that order of "least effort, most impact") is the highest-leverage next work. Everything else on
 the site already works end-to-end.
+<!-- deploy trigger test 1786041483 -->
