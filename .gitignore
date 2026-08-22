@@ -1,1 +1,10 @@
 .DS_Store
+
+# audit 2026-08-15
+.env
+.env.*
+!.env.example
+.DS_Store
+__pycache__/
+*.pyc
+*.log
